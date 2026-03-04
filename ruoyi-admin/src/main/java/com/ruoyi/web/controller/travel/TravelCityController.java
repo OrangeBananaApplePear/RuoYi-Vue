@@ -19,12 +19,25 @@ public class TravelCityController extends BaseController
     @Autowired
     private ITravelCityService travelCityService;
 
+    /**
+     * 查询城市列表（分页，用于列表页面）
+     */
     @GetMapping("/list")
     public TableDataInfo list(TravelCity travelCity)
     {
         startPage();
         List<TravelCity> list = travelCityService.selectTravelCityList(travelCity);
         return getDataTable(list);
+    }
+
+    /**
+     * 查询城市树形列表（不分页，用于树形展示）
+     */
+    @GetMapping("/tree")
+    public AjaxResult tree()
+    {
+        List<TravelCity> list = travelCityService.selectTravelCityList(new TravelCity());
+        return success(list);
     }
 
     @GetMapping("/{cityId}")

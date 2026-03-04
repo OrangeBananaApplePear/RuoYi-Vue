@@ -20,7 +20,7 @@ VALUES (2002, '景点管理', 2000, 2, 'spot', 'travel/spot/index', 1, 0, 'C', '
 INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
 VALUES (2003, '打卡管理', 2000, 3, 'checkin', 'travel/checkin/index', 1, 0, 'C', '0', '0', 'travel:checkin:list', 'check', 'admin', NOW(), '', NULL, '');
 
---按钮权限 城市管理
+-- 按钮权限 城市管理
 INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
 VALUES (2004, '城市查询', 2001, 1, '', '', 1, 0, 'F', '0', '0', 'travel:city:query', '#', 'admin', NOW(), '', NULL, '');
 INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)

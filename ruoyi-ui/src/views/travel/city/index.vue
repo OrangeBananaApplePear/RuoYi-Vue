@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { listCity, getCity, addCity, updateCity, delCity } from '@/api/travel/city'
+import { listCity, treeCity, getCity, addCity, updateCity, delCity } from '@/api/travel/city'
 import { handleTree } from '@/utils/ruoyi'
 
 export default {
@@ -139,14 +139,14 @@ export default {
   methods: {
     getList() {
       this.loading = true
-      listCity(this.queryParams).then(response => {
-        this.cityList = handleTree(response.rows, 'cityId', 'parentId')
+      treeCity().then(response => {
+        this.cityList = handleTree(response.data, 'cityId', 'parentId')
         this.loading = false
       })
     },
     getTreeselect() {
-      listCity().then(response => {
-        this.cityOptions = [{ cityId: 0, cityName: '顶级节点', children: handleTree(response.rows, 'cityId', 'parentId') }]
+      treeCity().then(response => {
+        this.cityOptions = [{ cityId: 0, cityName: '顶级节点', children: handleTree(response.data, 'cityId', 'parentId') }]
       })
     },
     cancel() {

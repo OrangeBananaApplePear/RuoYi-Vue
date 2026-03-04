@@ -8,6 +8,13 @@ export function listCity(query) {
   })
 }
 
+export function treeCity() {
+  return request({
+    url: '/travel/city/tree',
+    method: 'get'
+  })
+}
+
 export function getCity(cityId) {
   return request({
     url: '/travel/city/' + cityId,
