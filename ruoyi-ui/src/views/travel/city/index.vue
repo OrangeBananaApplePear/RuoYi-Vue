@@ -151,22 +151,11 @@ export default {
   methods: {
     getList() {
       this.loading = true
-      // 查询树形数据，根据搜索条件过滤
-      treeCity().then(response => {
-        let list = response.data
-        // 根据搜索条件过滤
-        if (this.queryParams.cityName) {
-          list = list.filter(item => item.cityName.includes(this.queryParams.cityName))
-        }
-        if (this.queryParams.level) {
-          list = list.filter(item => item.level === this.queryParams.level)
-        }
-        if (this.queryParams.status !== undefined && this.queryParams.status !== '') {
-          list = list.filter(item => item.status === String(this.queryParams.status))
-        }
+      // 查询分页数据
+      listCity(this.queryParams).then(response => {
         // 构建树形结构
-        this.cityList = handleTree(list, 'cityId', 'parentId')
-        this.total = list.length
+        this.cityList = handleTree(response.rows, 'cityId', 'parentId')
+        this.total = response.total
         this.loading = false
       })
     },
