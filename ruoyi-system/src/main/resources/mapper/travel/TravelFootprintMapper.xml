@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.travel.TravelFootprintMapper">
+
+    <resultMap type="com.ruoyi.system.domain.travel.TravelFootprint" id="TravelFootprintResult">
+        <id     property="footprintId"  column="footprint_id"  />
+        <result property="userId"       column="user_id"       />
+        <result property="cityId"       column="city_id"       />
+        <result property="spotId"       column="spot_id"       />
+        <result property="type"         column="type"         />
+        <result property="createTime"  column="create_time"  />
+        <result property="cityName"     column="city_name"    />
+        <result property="spotName"     column="spot_name"    />
+        <result property="coverImage"   column="cover_image"  />
+    </resultMap>
+
+    <sql id="selectTravelFootprintVo">
+        select f.footprint_id, f.user_id, f.city_id, f.spot_id, f.type, f.create_time,
+               c.city_name, s.spot_name, s.cover_image
+        from travel_footprint f
+        left join travel_city c on f.city_id = c.city_id
+        left join travel_spot s on f.spot_id = s.spot_id
+    </sql>
+
+    <select id="selectTravelFootprintById" parameterType="Long" resultMap="TravelFootprintResult">
+        <include refid="selectTravelFootprintVo"/>
+        where f.footprint_id = #{footprintId}
+    </select>
+
+    <select id="selectTravelFootprintList" parameterType="com.ruoyi.system.domain.travel.TravelFootprint" resultMap="TravelFootprintResult">
+        <include refid="selectTravelFootprintVo"/>
+        <where>
+            <if test="userId != null">f.user_id = #{userId}</if>
+            <if test="type != null and type != ''"> AND f.type = #{type}</if>
+        </where>
+        order by f.create_time desc
+    </select>
+
+    <select id="selectCitiesByUserId" parameterType="Long" resultMap="TravelFootprintResult">
+        <include refid="selectTravelFootprintVo"/>
+        where f.user_id = #{userId} and f.type = '1'
+        order by f.create_time desc
+    </select>
+
+    <select id="selectSpotsByUserId" parameterType="Long" resultMap="TravelFootprintResult">
+        <include refid="selectTravelFootprintVo"/>
+        where f.user_id = #{userId} and f.type = '2'
+        order by f.create_time desc
+    </select>
+
+    <select id="selectCityFootprint" resultMap="TravelFootprintResult">
+        <include refid="selectTravelFootprintVo"/>
+        where f.user_id = #{userId} and f.city_id = #{cityId} and f.type = '1'
+    </select>
+
+    <select id="selectSpotFootprint" resultMap="TravelFootprintResult">
+        <include refid="selectTravelFootprintVo"/>
+        where f.user_id = #{userId} and f.spot_id = #{spotId} and f.type = '2'
+    </select>
+
+    <insert id="insertTravelFootprint" parameterType="com.ruoyi.system.domain.travel.TravelFootprint" useGeneratedKeys="true" keyProperty="footprintId">
+        insert into travel_footprint (user_id, city_id, spot_id, type, create_time)
+        values (#{userId}, #{cityId}, #{spotId}, #{type}, sysdate())
+    </insert>
+
+    <delete id="deleteTravelFootprintById" parameterType="Long">
+        delete from travel_footprint where footprint_id = #{footprintId}
+    </delete>
+
+</mapper>

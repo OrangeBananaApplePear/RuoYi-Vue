@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.travel.TravelSpotMapper">
+
+    <resultMap type="com.ruoyi.system.domain.travel.TravelSpot" id="TravelSpotResult">
+        <id     property="spotId"       column="spot_id"       />
+        <result property="cityId"       column="city_id"       />
+        <result property="spotName"     column="spot_name"     />
+        <result property="coverImage"   column="cover_image"   />
+        <result property="introduction" column="introduction"  />
+        <result property="description"  column="description"  />
+        <result property="address"      column="address"       />
+        <result property="latitude"     column="latitude"      />
+        <result property="longitude"    column="longitude"     />
+        <result"  column=" property="ticketPriceticket_price"  />
+        <result property="openTime"     column="open_time"     />
+        <result property="checkinCount" column="checkin_count" />
+        <result property="sort"         column="sort"          />
+        <result property="status"       column="status"        />
+        <result property="delFlag"      column="del_flag"      />
+        <result property="createBy"      column="create_by"     />
+        <result property="createTime"   column="create_time"   />
+        <result property="updateBy"     column="update_by"     />
+        <result property="updateTime"   column="update_time"   />
+        <result property="remark"       column="remark"       />
+        <!-- 非数据库字段 -->
+        <result property="cityName"     column="city_name"     />
+    </resultMap>
+
+    <sql id="selectTravelSpotVo">
+        select s.spot_id, s.city_id, s.spot_name, s.cover_image, s.introduction, 
+               s.description, s.address, s.latitude, s.longitude, s.ticket_price, 
+               s.open_time, s.checkin_count, s.sort, s.status, s.del_flag,
+               s.create_by, s.create_time, s.update_by, s.update_time, s.remark,
+               c.city_name
+        from travel_spot s
+        left join travel_city c on s.city_id = c.city_id
+    </sql>
+
+    <select id="selectTravelSpotList" parameterType="com.ruoyi.system.domain.travel.TravelSpot" resultMap="TravelSpotResult">
+        <include refid="selectTravelSpotVo"/>
+        <where>
+            s.del_flag = '0'
+            <if test="spotName != null and spotName != ''">
+                AND s.spot_name like concat('%', #{spotName}, '%')
+            </if>
+            <if test="cityId != null">
+                AND s.city_id = #{cityId}
+            </if>
+            <if test="status != null and status != ''">
+                AND s.status = #{status}
+            </if>
+        </where>
+        order by s.sort, s.spot_id
+    </select>
+
+    <select id="selectTravelSpotById" parameterType="Long" resultMap="TravelSpotResult">
+        <include refid="selectTravelSpotVo"/>
+        where s.spot_id = #{spotId}
+    </select>
+
+    <select id="selectTravelSpotByCityId" parameterType="Long" resultMap="TravelSpotResult">
+        <include refid="selectTravelSpotVo"/>
+        where s.city_id = #{cityId} and s.del_flag = '0' and s.status = '0'
+        order by s.sort, s.spot_id
+    </select>
+
+    <select id="selectCheckedSpotsByUserId" parameterType="Long" resultMap="TravelSpotResult">
+        select s.spot_id, s.city_id, s.spot_name, s.cover_image, s.introduction,
+               s.checkin_count, s.del_flag
+        from travel_spot s
+        inner join travel_footprint f on s.spot_id = f.spot_id
+        where f.user_id = #{userId} and f.type = '2' and s.del_flag = '0'
+    </select>
+
+    <insert id="insertTravelSpot" parameterType="com.ruoyi.system.domain.travel.TravelSpot" useGeneratedKeys="true" keyProperty="spotId">
+        insert into travel_spot
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cityId != null">city_id,</if>
+            <if test="spotName != null and spotName != ''">spot_name,</if>
+            <if test="coverImage != null">cover_image,</if>
+            <if test="introduction != null">introduction,</if>
+            <if test="description != null">description,</if>
+            <if test="address != null">address,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="ticketPrice != null">ticket_price,</if>
+            <if test="openTime != null">open_time,</if>
+            <if test="sort != null">sort,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cityId != null">#{cityId},</if>
+            <if test="spotName != null and spotName != ''">#{spotName},</if>
+            <if test="coverImage != null">#{coverImage},</if>
+            <if test="introduction != null">#{introduction},</if>
+            <if test="description != null">#{description},</if>
+            <if test="address != null">#{address},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="ticketPrice != null">#{ticketPrice},</if>
+            <if test="openTime != null">#{openTime},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="updateTravelSpot" parameterType="com.ruoyi.system.domain.travel.TravelSpot">
+        update travel_spot
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cityId != null">city_id = #{cityId},</if>
+            <if test="spotName != null and spotName != ''">spot_name = #{spotName},</if>
+            <if test="coverImage != null">cover_image = #{coverImage},</if>
+            <if test="introduction != null">introduction = #{introduction},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="ticketPrice != null">ticket_price = #{ticketPrice},</if>
+            <if test="openTime != null">open_time = #{openTime},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </trim>
+        where spot_id = #{spotId}
+    </update>
+
+    <update id="deleteTravelSpotById" parameterType="Long">
+        update travel_spot set del_flag = '1' where spot_id = #{spotId}
+    </update>
+
+    <update id="deleteTravelSpotByIds" parameterType="Long">
+        update travel_spot set del_flag = '1' where spot_id in
+        <foreach item="spotId" collection="array" open="(" separator="," close=")">
+            #{spotId}
+        </foreach>
+    </update>
+
+    <update id="incrementCheckinCount" parameterType="Long">
+        update travel_spot set checkin_count = checkin_count + 1 where spot_id = #{spotId}
+    </update>
+
+    <update id="decrementCheckinCount" parameterType="Long">
+        update travel_spot set checkin_count = checkin_count - 1 where spot_id = #{spotId} and checkin_count > 0
+    </update>
+
+</mapper>

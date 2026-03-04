@@ -1,0 +1,31 @@
+{
+  "name": "旅途",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:mp-weixin": "uni --mp-weixin",
+    "dev:h5": "uni",
+    "dev:app": "uni -p app",
+    "build:mp-weixin": "uni build --mp-weixin",
+    "build:h5": "uni build",
+    "build:app": "uni build -p app"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "^3.0.0-alpha-3090920230703001",
+    "@dcloudio/uni-components": "^3.0.0-alpha-3090920230703001",
+    "@dcloudio/uni-h5": "^3.0.0-alpha-3090920230703001",
+    "@dcloudio/uni-mp-weixin": "^3.0.0-alpha-3090920230703001",
+    "@dcloudio/uni-app-plus": "^3.0.0-alpha-3090920230703001",
+    "vue": "^3.3.4",
+    "pinia": "^2.1.6",
+    "uni-ui": "^1.5.3"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "^3.3.2",
+    "@dcloudio/uni-automator": "^3.0.0-alpha-3090920230703001",
+    "@dcloudio/uni-cli-shared": "^3.0.0-alpha-3090920230703001",
+    "@dcloudio/uni-stacktracey": "^3.0.0-alpha-3090920230703001",
+    "@dcloudio/vite-plugin-uni": "^3.0.0-alpha-3090920230703001",
+    "vite": "^4.4.9"
+  }
+}

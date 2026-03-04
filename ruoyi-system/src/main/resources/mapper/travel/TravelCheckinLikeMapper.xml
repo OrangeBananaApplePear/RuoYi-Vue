@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.travel.TravelCheckinLikeMapper">
+
+    <resultMap type="com.ruoyi.system.domain.travel.TravelCheckinLike" id="TravelCheckinLikeResult">
+        <id     property="likeId"     column="like_id"     />
+        <result property="checkinId"   column="checkin_id"   />
+        <result property="userId"     column="user_id"     />
+        <result property="createTime" column="create_time" />
+        <result property="nickname"   column="nickname"    />
+        <result property="avatar"     column="avatar"      />
+    </resultMap>
+
+    <select id="selectLike" resultMap="TravelCheckinLikeResult">
+        select l.like_id, l.checkin_id, l.user_id, l.create_time, u.nickname, u.avatar
+        from travel_checkin_like l
+        left join travel_user u on l.user_id = u.user_id
+        where l.checkin_id = #{checkinId} and l.user_id = #{userId}
+    </select>
+
+    <select id="selectLikesByCheckinId" parameterType="Long" resultMap="TravelCheckinLikeResult">
+        select l.like_id, l.checkin_id, l.user_id, l.create_time, u.nickname, u.avatar
+        from travel_checkin_like l
+        left join travel_user u on l.user_id = u.user_id
+        where l.checkin_id = #{checkinId}
+        order by l.create_time desc
+    </select>
+
+    <insert id="insertTravelCheckinLike" parameterType="com.ruoyi.system.domain.travel.TravelCheckinLike">
+        insert into travel_checkin_like (checkin_id, user_id, create_time)
+        values (#{checkinId}, #{userId}, sysdate())
+    </insert>
+
+    <delete id="deleteTravelCheckinLike">
+        delete from travel_checkin_like where checkin_id = #{checkinId} and user_id = #{userId}
+    </delete>
+
+    <delete id="deleteLikesByCheckinId" parameterType="Long">
+        delete from travel_checkin_like where checkin_id = #{checkinId}
+    </delete>
+
+</mapper>

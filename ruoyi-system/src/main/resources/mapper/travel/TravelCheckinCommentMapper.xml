@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.travel.TravelCheckinCommentMapper">
+
+    <resultMap type="com.ruoyi.system.domain.travel.TravelCheckinComment" id="TravelCheckinCommentResult">
+        <id     property="commentId"   column="comment_id"   />
+        <result property="checkinId"    column="checkin_id"    />
+        <result property="userId"       column="user_id"       />
+        <result property="parentId"    column="parent_id"    />
+        <result property="content"     column="content"      />
+        <result property="delFlag"     column="del_flag"     />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"  column="create_time"  />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"  column="update_time"  />
+        <result property="nickname"    column="nickname"     />
+        <result property="avatar"      column="avatar"       />
+    </resultMap>
+
+    <sql id="selectTravelCheckinCommentVo">
+        select c.comment_id, c.checkin_id, c.user_id, c.parent_id, c.content, c.del_flag,
+               c.create_by, c.create_time, c.update_by, c.update_time,
+               u.nickname, u.avatar
+        from travel_checkin_comment c
+        left join travel_user u on c.user_id = u.user_id
+    </sql>
+
+    <select id="selectTravelCheckinCommentById" parameterType="Long" resultMap="TravelCheckinCommentResult">
+        <include refid="selectTravelCheckinCommentVo"/>
+        where c.comment_id = #{commentId}
+    </select>
+
+    <select id="selectCommentsByCheckinId" parameterType="Long" resultMap="TravelCheckinCommentResult">
+        <include refid="selectTravelCheckinCommentVo"/>
+        where c.checkin_id = #{checkinId} and c.del_flag = '0'
+        order by c.create_time asc
+    </select>
+
+    <insert id="insertTravelCheckinComment" parameterType="com.ruoyi.system.domain.travel.TravelCheckinComment" useGeneratedKeys="true" keyProperty="commentId">
+        insert into travel_checkin_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="checkinId != null">checkin_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="createBy != null">create_by,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="checkinId != null">#{checkinId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="createBy != null">#{createBy},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="deleteTravelCheckinCommentById" parameterType="Long">
+        update travel_checkin_comment set del_flag = '1' where comment_id = #{commentId}
+    </update>
+
+    <delete id="deleteCommentsByCheckinId" parameterType="Long">
+        update travel_checkin_comment set del_flag = '1' where checkin_id = #{checkinId}
+    </delete>
+
+</mapper>
