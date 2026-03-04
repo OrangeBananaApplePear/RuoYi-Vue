@@ -14,7 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="address"      column="address"       />
         <result property="latitude"     column="latitude"      />
         <result property="longitude"    column="longitude"     />
-        <result"  column=" property="ticketPriceticket_price"  />
+        <result property="ticketPrice" column="ticket_price" />
         <result property="openTime"     column="open_time"     />
         <result property="checkinCount" column="checkin_count" />
         <result property="sort"         column="sort"          />
