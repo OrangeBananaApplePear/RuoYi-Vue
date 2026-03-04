@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.travel;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,34 @@ public class TravelCityController extends BaseController
     public AjaxResult tree()
     {
         List<TravelCity> list = travelCityService.selectTravelCityList(new TravelCity());
-        return success(list);
+        // 构建树形结构
+        List<TravelCity> treeList = buildCityTree(list);
+        return success(treeList);
+    }
+    
+    /**
+     * 构建城市树形结构
+     */
+    private List<TravelCity> buildCityTree(List<TravelCity> list) {
+        List<TravelCity> result = new ArrayList<>();
+        // 先把所有数据放入map
+        java.util.Map<Long, TravelCity> map = new java.util.HashMap<>();
+        for (TravelCity city : list) {
+            map.put(city.getCityId(), city);
+            city.setChildren(new ArrayList<>());
+        }
+        // 构建树形结构
+        for (TravelCity city : list) {
+            if (city.getParentId() == null || city.getParentId() == 0) {
+                result.add(city);
+            } else {
+                TravelCity parent = map.get(city.getParentId());
+                if (parent != null) {
+                    parent.getChildren().add(city);
+                }
+            }
+        }
+        return result;
     }
 
     @GetMapping("/{cityId}")
