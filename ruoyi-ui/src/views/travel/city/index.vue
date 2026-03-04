@@ -198,11 +198,14 @@ export default {
       this.reset()
       this.getTreeselect()
       if (row != null && row.cityId) {
-        this.form.parentId = row.cityId
+        this.form.parentId = Number(row.cityId)
         this.form.level = (row.level || 0) + 1
       }
-      this.open = true
-      this.title = '添加城市'
+      // 等待tree数据加载完成后打开弹窗
+      this.$nextTick(() => {
+        this.open = true
+        this.title = '添加城市'
+      })
     },
     handleUpdate(row) {
       this.reset()
@@ -212,9 +215,14 @@ export default {
         // 确保parentId为数字类型，0表示顶级节点
         if (this.form.parentId === null || this.form.parentId === undefined) {
           this.form.parentId = 0
+        } else {
+          this.form.parentId = Number(this.form.parentId)
         }
-        this.open = true
-        this.title = '修改城市'
+        // 等待tree数据加载完成后回显
+        this.$nextTick(() => {
+          this.open = true
+          this.title = '修改城市'
+        })
       })
     },
     submitForm() {
