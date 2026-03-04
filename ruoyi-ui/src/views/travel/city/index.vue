@@ -194,23 +194,20 @@ export default {
       this.queryParams.level = 1
       this.handleQuery()
     },
-    handleAdd(row) {
+    async handleAdd(row) {
       this.reset()
-      this.getTreeselect()
+      await this.getTreeselect()
       if (row != null && row.cityId) {
         this.form.parentId = Number(row.cityId)
         this.form.level = (row.level || 0) + 1
       }
-      // 等待tree数据加载完成后打开弹窗
-      this.$nextTick(() => {
-        this.open = true
-        this.title = '添加城市'
-      })
+      this.open = true
+      this.title = '添加城市'
     },
-    handleUpdate(row) {
+    async handleUpdate(row) {
       this.reset()
-      this.getTreeselect()
-      getCity(row.cityId).then(response => {
+      await this.getTreeselect()
+      await getCity(row.cityId).then(response => {
         this.form = response.data
         // 确保parentId为数字类型，0表示顶级节点
         if (this.form.parentId === null || this.form.parentId === undefined) {
@@ -218,12 +215,9 @@ export default {
         } else {
           this.form.parentId = Number(this.form.parentId)
         }
-        // 等待tree数据加载完成后回显
-        this.$nextTick(() => {
-          this.open = true
-          this.title = '修改城市'
-        })
       })
+      this.open = true
+      this.title = '修改城市'
     },
     submitForm() {
       this.$refs.form.validate(valid => {
