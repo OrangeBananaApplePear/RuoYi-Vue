@@ -60,9 +60,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="所属城市" prop="cityId">
-              <el-select v-model="form.cityId" placeholder="请选择城市">
-                <el-option v-for="city in cityList" :key="city.cityId" :label="city.cityName" :value="city.cityId" />
-              </el-select>
+              <el-cascader v-model="form.cityId" :options="cityTreeList" :props="{value: 'cityId', label: 'cityName', children: 'children', checkStrictly: true, emitPath: false}" placeholder="请选择城市" clearable style="width: 100%" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
