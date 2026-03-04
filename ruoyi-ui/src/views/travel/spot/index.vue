@@ -6,9 +6,7 @@
         <el-input v-model="queryParams.spotName" placeholder="请输入景点名称" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="所属城市" prop="cityId">
-        <el-select v-model="queryParams.cityId" placeholder="请选择城市" clearable>
-          <el-option v-for="city in cityList" :key="city.cityId" :label="city.cityName" :value="city.cityId" />
-        </el-select>
+        <el-tree-select v-model="queryParams.cityId" :data="cityTreeList" :props="{value: 'cityId', label: 'cityName', children: 'children'}" value-key="cityId" placeholder="请选择城市" check-strictly clearable />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
@@ -48,7 +46,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <elprimary" icon="-button link type="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['travel:spot:edit']">修改</el-button>
+          <el-button link type="primary" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['travel:spot:edit']">修改</el-button>
           <el-button link type="primary" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['travel:spot:remove']">删除</el-button>
         </template>
       </el-table-column>
@@ -137,7 +135,8 @@
 
 <script>
 import { listSpot, getSpot, addSpot, updateSpot, delSpot } from '@/api/travel/spot'
-import { listCity } from '@/api/travel/city'
+import { listCity, treeCity } from '@/api/travel/city'
+import { handleTree } from '@/utils/ruoyi'
 
 export default {
   name: 'TravelSpot',
@@ -146,6 +145,7 @@ export default {
       loading: true,
       spotList: [],
       cityList: [],
+      cityTreeList: [],
       ids: [],
       multiple: true,
       showSearch: true,
@@ -171,8 +171,13 @@ export default {
       })
     },
     getCityList() {
+      // 获取城市列表（平铺，用于下拉选择）
       listCity({}).then(response => {
         this.cityList = response.rows
+      })
+      // 获取城市树形（用于搜索条件）
+      treeCity().then(response => {
+        this.cityTreeList = handleTree(response.data, 'cityId', 'parentId')
       })
     },
     cancel() {
