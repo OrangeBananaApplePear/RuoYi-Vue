@@ -43,7 +43,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.level === 1" link type="primary" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['travel:city:edit']">修改</el-button>
+          <el-button link type="primary" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['travel:city:edit']">修改</el-button>
           <el-button v-if="scope.row.level === 1" link type="primary" icon="el-icon-plus" @click="handleAdd(scope.row)" v-hasPermi="['travel:city:add']">新增下级</el-button>
           <el-button link type="primary" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['travel:city:remove']">删除</el-button>
         </template>
