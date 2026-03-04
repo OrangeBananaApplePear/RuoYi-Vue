@@ -6,15 +6,15 @@
         <el-input v-model="queryParams.cityName" placeholder="请输入城市名称" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="层级" prop="level">
-        <el-select v-model="queryParams.level" placeholder="请选择层级" clearable>
+        <el-select v-model="queryParams.level" placeholder="请选择层级" clearable @change="handleQuery">
           <el-option label="省" :value="1" />
           <el-option label="市" :value="2" />
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable>
-          <el-option label="正常" value="0" />
-          <el-option label="停用" value="1" />
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable @change="handleQuery">
+          <el-option label="正常" :value="0" />
+          <el-option label="停用" :value="1" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -140,7 +140,7 @@ export default {
       showSearch: true,
       title: '',
       open: false,
-      queryParams: { pageNum: 1, pageSize: 10, cityName: undefined, level: undefined, status: undefined },
+      queryParams: { pageNum: 1, pageSize: 10, cityName: undefined, level: 1, status: undefined },
       form: {},
       rules: { cityName: [{ required: true, message: '城市名称不能为空', trigger: 'blur' }] }
     }
@@ -151,16 +151,30 @@ export default {
   methods: {
     getList() {
       this.loading = true
-      listCity(this.queryParams).then(response => {
-        this.cityList = response.rows
-        this.total = response.total
+      // 查询树形数据，根据搜索条件过滤
+      treeCity().then(response => {
+        let list = response.data
+        // 根据搜索条件过滤
+        if (this.queryParams.cityName) {
+          list = list.filter(item => item.cityName.includes(this.queryParams.cityName))
+        }
+        if (this.queryParams.level) {
+          list = list.filter(item => item.level === this.queryParams.level)
+        }
+        if (this.queryParams.status !== undefined && this.queryParams.status !== '') {
+          list = list.filter(item => item.status === String(this.queryParams.status))
+        }
+        // 构建树形结构
+        this.cityList = handleTree(list, 'cityId', 'parentId')
+        this.total = list.length
         this.loading = false
       })
     },
     getTreeselect() {
       treeCity().then(response => {
         // 构建树形选择器数据，顶级节点parentId为0
-        this.cityOptions = [{ cityId: 0, cityName: '顶级节点', children: handleTree(response.data, 'cityId', 'parentId') }]
+        const treeData = handleTree(response.data, 'cityId', 'parentId')
+        this.cityOptions = [{ cityId: 0, cityName: '顶级节点', children: treeData }]
       })
     },
     cancel() {
@@ -172,10 +186,12 @@ export default {
       this.resetForm('form')
     },
     handleQuery() {
+      this.queryParams.pageNum = 1
       this.getList()
     },
     resetQuery() {
       this.resetForm('queryForm')
+      this.queryParams.level = 1
       this.handleQuery()
     },
     handleAdd(row) {
@@ -193,7 +209,7 @@ export default {
       this.getTreeselect()
       getCity(row.cityId).then(response => {
         this.form = response.data
-        // 确保parentId为数字类型
+        // 确保parentId为数字类型，0表示顶级节点
         if (this.form.parentId === null || this.form.parentId === undefined) {
           this.form.parentId = 0
         }
@@ -236,14 +252,6 @@ export default {
         this.$modal.msgSuccess(text + '成功')
       }).catch(function() {
         row.status = row.status === '0' ? '1' : '0'
-      })
-    },
-    // 表格树形展开事件（可选，如果需要展开子节点）
-    loadChildren(tree, resolve) {
-      const parentId = tree.cityId
-      treeCity().then(response => {
-        const children = response.data.filter(item => item.parentId === parentId)
-        resolve(children)
       })
     }
   }
