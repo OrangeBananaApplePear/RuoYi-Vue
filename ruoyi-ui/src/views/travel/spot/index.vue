@@ -136,7 +136,6 @@
 <script>
 import { listSpot, getSpot, addSpot, updateSpot, delSpot } from '@/api/travel/spot'
 import { listCity, treeCity } from '@/api/travel/city'
-import { handleTree } from '@/utils/ruoyi'
 
 export default {
   name: 'TravelSpot',
@@ -175,9 +174,9 @@ export default {
       listCity({}).then(response => {
         this.cityList = response.rows
       })
-      // 获取城市树形（用于搜索条件）
+      // 获取城市树形（用于搜索条件）- 后端已返回树形结构
       treeCity().then(response => {
-        this.cityTreeList = handleTree(response.data, 'cityId', 'parentId')
+        this.cityTreeList = response.data || []
       })
     },
     cancel() {
