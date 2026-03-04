@@ -3,10 +3,9 @@ package com.ruoyi.system.controller.travel;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.ruoyi.common.core.web.controller.BaseController;
-import com.ruoyi.common.core.web.domain.AjaxResult;
-import com.ruoyi.common.core.web.page.TableDataInfo;
-import com.ruoyi.common.security.annotation.RequiresPermissions;
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.system.domain.travel.TravelCity;
 import com.ruoyi.system.service.travel.ITravelCityService;
 
@@ -55,7 +54,6 @@ public class TravelCityController extends BaseController
     /**
      * 查询城市列表
      */
-    @RequiresPermissions("travel:city:list")
     @GetMapping("/list")
     public TableDataInfo list(TravelCity travelCity)
     {
@@ -67,7 +65,6 @@ public class TravelCityController extends BaseController
     /**
      * 获取城市详细信息
      */
-    @RequiresPermissions("travel:city:query")
     @GetMapping(value = "/{cityId}")
     public AjaxResult getInfo(@PathVariable Long cityId)
     {
@@ -77,7 +74,6 @@ public class TravelCityController extends BaseController
     /**
      * 新增城市
      */
-    @RequiresPermissions("travel:city:add")
     @PostMapping
     public AjaxResult add(@RequestBody TravelCity travelCity)
     {
@@ -87,7 +83,6 @@ public class TravelCityController extends BaseController
     /**
      * 修改城市
      */
-    @RequiresPermissions("travel:city:edit")
     @PutMapping
     public AjaxResult edit(@RequestBody TravelCity travelCity)
     {
@@ -97,7 +92,6 @@ public class TravelCityController extends BaseController
     /**
      * 删除城市
      */
-    @RequiresPermissions("travel:city:remove")
     @DeleteMapping("/{cityIds}")
     public AjaxResult remove(@PathVariable Long[] cityIds)
     {

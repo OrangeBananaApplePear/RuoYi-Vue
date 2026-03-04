@@ -2,10 +2,10 @@ package com.ruoyi.system.controller.travel;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.ruoyi.common.core.web.controller.BaseController;
-import com.ruoyi.common.core.web.domain.AjaxResult;
-import com.ruoyi.common.security.annotation.RequiresPermissions;
-import com.ruoyi.common.security.utils.SecurityUtils;
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.travel.TravelUser;
 import com.ruoyi.system.service.travel.ITravelUserService;
 
@@ -118,7 +118,6 @@ public class TravelUserController extends BaseController
     /**
      * 用户列表(管理端)
      */
-    @RequiresPermissions("travel:user:list")
     @GetMapping("/list")
     public TableDataInfo list(TravelUser travelUser)
     {

@@ -3,10 +3,10 @@ package com.ruoyi.system.controller.travel;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.ruoyi.common.core.web.controller.BaseController;
-import com.ruoyi.common.core.web.domain.AjaxResult;
-import com.ruoyi.common.security.annotation.RequiresPermissions;
-import com.ruoyi.common.security.utils.SecurityUtils;
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.travel.TravelFootprint;
 import com.ruoyi.system.service.travel.ITravelFootprintService;
 
@@ -81,7 +81,6 @@ public class TravelFootprintController extends BaseController
     /**
      * 获取足迹列表(管理端)
      */
-    @RequiresPermissions("travel:footprint:list")
     @GetMapping("/list")
     public TableDataInfo list(TravelFootprint travelFootprint)
     {

@@ -3,10 +3,9 @@ package com.ruoyi.system.controller.travel;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.ruoyi.common.core.web.controller.BaseController;
-import com.ruoyi.common.core.web.domain.AjaxResult;
-import com.ruoyi.common.core.web.page.TableDataInfo;
-import com.ruoyi.common.security.annotation.RequiresPermissions;
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.system.domain.travel.TravelSpot;
 import com.ruoyi.system.service.travel.ITravelSpotService;
 
@@ -45,7 +44,6 @@ public class TravelSpotController extends BaseController
     /**
      * 查询景点列表
      */
-    @RequiresPermissions("travel:spot:list")
     @GetMapping("/list")
     public TableDataInfo list(TravelSpot travelSpot)
     {
@@ -66,7 +64,6 @@ public class TravelSpotController extends BaseController
     /**
      * 新增景点
      */
-    @RequiresPermissions("travel:spot:add")
     @PostMapping
     public AjaxResult add(@RequestBody TravelSpot travelSpot)
     {
@@ -77,7 +74,6 @@ public class TravelSpotController extends BaseController
     /**
      * 修改景点
      */
-    @RequiresPermissions("travel:spot:edit")
     @PutMapping
     public AjaxResult edit(@RequestBody TravelSpot travelSpot)
     {
@@ -88,7 +84,6 @@ public class TravelSpotController extends BaseController
     /**
      * 删除景点
      */
-    @RequiresPermissions("travel:spot:remove")
     @DeleteMapping("/{spotIds}")
     public AjaxResult remove(@PathVariable Long[] spotIds)
     {

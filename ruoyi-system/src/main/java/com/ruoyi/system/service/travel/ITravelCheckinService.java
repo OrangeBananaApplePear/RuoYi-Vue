@@ -2,6 +2,7 @@ package com.ruoyi.system.service.travel;
 
 import java.util.List;
 import com.ruoyi.system.domain.travel.TravelCheckin;
+import com.ruoyi.system.domain.travel.TravelCheckinComment;
 
 /**
  * 打卡记录Service接口
@@ -68,7 +69,7 @@ public interface ITravelCheckinService
     /**
      * 评论打卡
      */
-    public int commentCheckin(TravelCheckin comment);
+    public int commentCheckin(TravelCheckinComment comment);
 
     /**
      * 删除评论
