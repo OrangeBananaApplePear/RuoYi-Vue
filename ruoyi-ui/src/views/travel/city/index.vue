@@ -157,17 +157,33 @@ export default {
     // 获取省级列表数据（分页）
     getList() {
       this.loading = true
-      // 查询省级数据，支持城市名称搜索
-      listCity(this.queryParams).then(response => {
-        // 标记是否有子节点
-        const list = response.rows.map(item => {
-          item.hasChildren = item.hasChildren !== undefined ? item.hasChildren : true
-          return item
+      
+      // 如果有搜索关键词，同时查询省级和市级
+      if (this.queryParams.cityName) {
+        // 并行查询省级和市级
+        Promise.all([
+          listCity({ level: 1, cityName: this.queryParams.cityName }),
+          listCity({ level: 2, cityName: this.queryParams.cityName })
+        ]).then(([provinceRes, cityRes]) => {
+          // 合并数据，构建树形
+          const allData = [...provinceRes.rows, ...cityRes.rows]
+          this.cityList = handleTree(allData, 'cityId', 'parentId')
+          // 分页只按省级 count
+          this.total = provinceRes.total
+          this.loading = false
         })
-        this.cityList = list
-        this.total = response.total
-        this.loading = false
-      })
+      } else {
+        // 无搜索时只查省级
+        listCity({ level: 1 }).then(response => {
+          const list = response.rows.map(item => {
+            item.hasChildren = item.hasChildren !== undefined ? item.hasChildren : true
+            return item
+          })
+          this.cityList = list
+          this.total = response.total
+          this.loading = false
+        })
+      }
     },
     // 懒加载子城市（点击展开时触发）
     loadChildren(row, treeNode, resolve) {
