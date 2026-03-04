@@ -6,7 +6,8 @@
         <el-input v-model="queryParams.spotName" placeholder="请输入景点名称" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="所属城市" prop="cityId">
-        <el-tree-select v-model="queryParams.cityId" :data="cityTreeList" :props="{value: 'cityId', label: 'cityName', children: 'children'}" value-key="cityId" placeholder="请选择城市" check-strictly clearable />
+        <el-tree-select v-if="cityTreeList.length > 0" v-model="queryParams.cityId" :data="cityTreeList" :props="{value: 'cityId', label: 'cityName', children: 'children'}" value-key="cityId" placeholder="请选择城市" check-strictly clearable />
+        <el-select v-else v-model="queryParams.cityId" placeholder="加载中..." disabled />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
