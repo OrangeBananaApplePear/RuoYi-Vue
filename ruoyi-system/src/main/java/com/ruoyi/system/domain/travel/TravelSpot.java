@@ -1,15 +1,18 @@
 package com.ruoyi.system.domain.travel;
 
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.List;
 import com.ruoyi.common.core.annotation.Excel;
-import com.ruoyi.common.core.web.domain.BaseEntity;
+import com.ruoyi.common.core.domain.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 景点对象 travel_spot
  * 
  * @author 旅途
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class TravelSpot extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -67,204 +70,9 @@ public class TravelSpot extends BaseEntity
     /** 删除标志 */
     private String delFlag;
 
-    // ========== 非数据库字段 ==========
     /** 是否已打卡(用户) */
     private Boolean isChecked;
 
     /** 用户打卡记录 */
-    private java.util.List<TravelCheckin> myCheckins;
-
-    public Long getSpotId()
-    {
-        return spotId;
-    }
-
-    public void setSpotId(Long spotId)
-    {
-        this.spotId = spotId;
-    }
-
-    public Long getCityId()
-    {
-        return cityId;
-    }
-
-    public void setCityId(Long cityId)
-    {
-        this.cityId = cityId;
-    }
-
-    public String getCityName()
-    {
-        return cityName;
-    }
-
-    public void setCityName(String cityName)
-    {
-        this.cityName = cityName;
-    }
-
-    public String getSpotName()
-    {
-        return spotName;
-    }
-
-    public void setSpotName(String spotName)
-    {
-        this.spotName = spotName;
-    }
-
-    public String getCoverImage()
-    {
-        return coverImage;
-    }
-
-    public void setCoverImage(String coverImage)
-    {
-        this.coverImage = coverImage;
-    }
-
-    public String getIntroduction()
-    {
-        return introduction;
-    }
-
-    public void setIntroduction(String introduction)
-    {
-        this.introduction = introduction;
-    }
-
-    public String getDescription()
-    {
-        return description;
-    }
-
-    public void setDescription(String description)
-    {
-        this.description = description;
-    }
-
-    public String getAddress()
-    {
-        return address;
-    }
-
-    public void setAddress(String address)
-    {
-        this.address = address;
-    }
-
-    public String getLatitude()
-    {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude)
-    {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude()
-    {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude)
-    {
-        this.longitude = longitude;
-    }
-
-    public String getTicketPrice()
-    {
-        return ticketPrice;
-    }
-
-    public void setTicketPrice(String ticketPrice)
-    {
-        this.ticketPrice = ticketPrice;
-    }
-
-    public String getOpenTime()
-    {
-        return openTime;
-    }
-
-    public void setOpenTime(String openTime)
-    {
-        this.openTime = openTime;
-    }
-
-    public Integer getCheckinCount()
-    {
-        return checkinCount;
-    }
-
-    public void setCheckinCount(Integer checkinCount)
-    {
-        this.checkinCount = checkinCount;
-    }
-
-    public Integer getSort()
-    {
-        return sort;
-    }
-
-    public void setSort(Integer sort)
-    {
-        this.sort = sort;
-    }
-
-    @Override
-    public String getStatus()
-    {
-        return status;
-    }
-
-    @Override
-    public void setStatus(String status)
-    {
-        this.status = status;
-    }
-
-    public String getDelFlag()
-    {
-        return delFlag;
-    }
-
-    public void setDelFlag(String delFlag)
-    {
-        this.delFlag = delFlag;
-    }
-
-    public Boolean getIsChecked()
-    {
-        return isChecked;
-    }
-
-    public void setIsChecked(Boolean isChecked)
-    {
-        this.isChecked = isChecked;
-    }
-
-    public java.util.List<TravelCheckin> getMyCheckins()
-    {
-        return myCheckins;
-    }
-
-    public void setMyCheckins(java.util.List<TravelCheckin> myCheckins)
-    {
-        this.myCheckins = myCheckins;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "TravelSpot{" +
-                "spotId=" + spotId +
-                ", cityId=" + cityId +
-                ", spotName='" + spotName + '\'' +
-                ", checkinCount=" + checkinCount +
-                ", isChecked=" + isChecked +
-                '}';
-    }
+    private List<TravelCheckin> myCheckins;
 }
