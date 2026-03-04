@@ -1,21 +1,9 @@
 <template>
   <div class="app-container">
     <!-- 查询条件 -->
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="90px">
       <el-form-item label="城市名称" prop="cityName">
-        <el-input v-model="queryParams.cityName" placeholder="请输入城市名称" clearable @keyup.enter.native="handleQuery" />
-      </el-form-item>
-      <el-form-item label="层级" prop="level">
-        <el-select v-model="queryParams.level" placeholder="请选择层级" clearable @change="handleQuery">
-          <el-option label="省" :value="1" />
-          <el-option label="市" :value="2" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable @change="handleQuery">
-          <el-option label="正常" :value="0" />
-          <el-option label="停用" :value="1" />
-        </el-select>
+        <el-input v-model="queryParams.cityName" placeholder="请输入城市/省份名称" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="handleQuery">搜索</el-button>
@@ -31,8 +19,8 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <!-- 表格 -->
-    <el-table v-loading="loading" :data="cityList" row-key="cityId" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+    <!-- 表格 - 树形表格 + 懒加载 -->
+    <el-table v-loading="loading" :data="cityList" row-key="cityId" :load="loadChildren" lazy :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
       <el-table-column label="城市名称" prop="cityName" width="200"></el-table-column>
       <el-table-column label="城市代码" prop="cityCode" width="150"></el-table-column>
       <el-table-column label="层级" prop="level" width="80">
@@ -55,8 +43,8 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button link type="primary" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['travel:city:edit']">修改</el-button>
-          <el-button link type="primary" icon="el-icon-plus" @click="handleAdd(scope.row)" v-hasPermi="['travel:city:add']">新增</el-button>
+          <el-button v-if="scope.row.level === 1" link type="primary" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['travel:city:edit']">修改</el-button>
+          <el-button v-if="scope.row.level === 1" link type="primary" icon="el-icon-plus" @click="handleAdd(scope.row)" v-hasPermi="['travel:city:add']">新增下级</el-button>
           <el-button link type="primary" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['travel:city:remove']">删除</el-button>
         </template>
       </el-table-column>
@@ -77,7 +65,11 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="上级城市" prop="parentId">
-              <el-tree-select v-model="form.parentId" :data="cityOptions" :props="{value: 'cityId', label: 'cityName', children: 'children'}" value-key="cityId" placeholder="选择上级城市" check-strictly />
+              <!-- 上级城市只显示省级城市 -->
+              <el-select v-model="form.parentId" placeholder="请选择上级城市（省级或空）" clearable style="width: 100%">
+                <el-option label="无（顶级）" :value="0" />
+                <el-option v-for="province in provinceList" :key="province.cityId" :label="province.cityName" :value="province.cityId" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -124,7 +116,7 @@
 </template>
 
 <script>
-import { listCity, treeCity, getCity, addCity, updateCity, delCity } from '@/api/travel/city'
+import { listCity, getCity, addCity, updateCity, delCity } from '@/api/travel/city'
 import { handleTree } from '@/utils/ruoyi'
 import Pagination from '@/components/Pagination'
 
@@ -136,34 +128,57 @@ export default {
       total: 0,
       loading: true,
       cityList: [],
-      cityOptions: [],
+      provinceList: [], // 省级列表（用于上级城市选择）
       showSearch: true,
       title: '',
       open: false,
-      queryParams: { pageNum: 1, pageSize: 10, cityName: undefined, level: 1, status: undefined },
+      // 查询参数 - 只查省级，搜索时支持城市名称
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        cityName: undefined,
+        level: 1 // 只查询省级
+      },
       form: {},
       rules: { cityName: [{ required: true, message: '城市名称不能为空', trigger: 'blur' }] }
     }
   },
   created() {
     this.getList()
+    this.getProvinceList()
   },
   methods: {
+    // 获取省级列表（用于上级城市选择）
+    getProvinceList() {
+      listCity({ level: 1 }).then(response => {
+        this.provinceList = response.rows || []
+      })
+    },
+    // 获取省级列表数据（分页）
     getList() {
       this.loading = true
-      // 查询分页数据
+      // 查询省级数据，支持城市名称搜索
       listCity(this.queryParams).then(response => {
-        // 构建树形结构
-        this.cityList = handleTree(response.rows, 'cityId', 'parentId')
+        // 标记是否有子节点
+        const list = response.rows.map(item => {
+          item.hasChildren = item.hasChildren !== undefined ? item.hasChildren : true
+          return item
+        })
+        this.cityList = list
         this.total = response.total
         this.loading = false
       })
     },
-    getTreeselect() {
-      treeCity().then(response => {
-        // 构建树形选择器数据，顶级节点parentId为0
-        const treeData = handleTree(response.data, 'cityId', 'parentId')
-        this.cityOptions = [{ cityId: 0, cityName: '顶级节点', children: treeData }]
+    // 懒加载子城市（点击展开时触发）
+    loadChildren(row, treeNode, resolve) {
+      // 根据parentId查询子城市（不限层级，统一查询）
+      listCity({ parentId: row.cityId }).then(response => {
+        // 标记是否有子节点
+        const children = response.rows.map(item => {
+          item.hasChildren = item.level === 1 // 只有省级可能有下级
+          return item
+        })
+        resolve(children)
       })
     },
     cancel() {
@@ -180,29 +195,31 @@ export default {
     },
     resetQuery() {
       this.resetForm('queryForm')
+      this.queryParams.cityName = undefined
       this.queryParams.level = 1
       this.handleQuery()
     },
-    async handleAdd(row) {
+    handleAdd(row) {
       this.reset()
-      await this.getTreeselect()
       if (row != null && row.cityId) {
-        this.form.parentId = Number(row.cityId)
-        this.form.level = (row.level || 0) + 1
+        // 新增下级城市
+        this.form.parentId = row.cityId
+        this.form.level = 2 // 下级城市为市级
+      } else {
+        // 新增省级
+        this.form.parentId = 0
+        this.form.level = 1
       }
       this.open = true
       this.title = '添加城市'
     },
     async handleUpdate(row) {
       this.reset()
-      await this.getTreeselect()
       await getCity(row.cityId).then(response => {
         this.form = response.data
-        // 确保parentId为数字类型，0表示顶级节点
+        // 处理parentId
         if (this.form.parentId === null || this.form.parentId === undefined) {
           this.form.parentId = 0
-        } else {
-          this.form.parentId = Number(this.form.parentId)
         }
       })
       this.open = true
@@ -211,27 +228,42 @@ export default {
     submitForm() {
       this.$refs.form.validate(valid => {
         if (valid) {
+          // 处理level：parentId为0时是省级，否则是市级
+          if (this.form.parentId === 0) {
+            this.form.level = 1
+          } else if (this.form.parentId > 0) {
+            this.form.level = 2
+          }
+          
           if (this.form.cityId != undefined) {
             updateCity(this.form).then(() => {
               this.$modal.msgSuccess('修改成功')
               this.open = false
               this.getList()
+              this.getProvinceList() // 刷新省级列表
             })
           } else {
             addCity(this.form).then(() => {
               this.$modal.msgSuccess('新增成功')
               this.open = false
               this.getList()
+              this.getProvinceList() // 刷新省级列表
             })
           }
         }
       })
     },
     handleDelete(row) {
+      // 如果有children且有数据，提示先删除子节点
+      if (row.children && row.children.length > 0) {
+        this.$modal.msgError('请先删除下级城市')
+        return
+      }
       this.$modal.confirm('是否确认删除名称为"' + row.cityName + '"的数据项?').then(function() {
         return delCity(row.cityId)
       }).then(() => {
         this.getList()
+        this.getProvinceList()
         this.$modal.msgSuccess('删除成功')
       })
     },
