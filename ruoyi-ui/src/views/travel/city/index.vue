@@ -62,6 +62,15 @@
       </el-table-column>
     </el-table>
 
+    <!-- 分页 -->
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
+
     <!-- 添加或修改城市对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -117,18 +126,21 @@
 <script>
 import { listCity, treeCity, getCity, addCity, updateCity, delCity } from '@/api/travel/city'
 import { handleTree } from '@/utils/ruoyi'
+import Pagination from '@/components/Pagination'
 
 export default {
   name: 'TravelCity',
+  components: { Pagination },
   data() {
     return {
+      total: 0,
       loading: true,
       cityList: [],
       cityOptions: [],
       showSearch: true,
       title: '',
       open: false,
-      queryParams: { cityName: undefined, level: undefined, status: undefined },
+      queryParams: { pageNum: 1, pageSize: 10, cityName: undefined, level: undefined, status: undefined },
       form: {},
       rules: { cityName: [{ required: true, message: '城市名称不能为空', trigger: 'blur' }] }
     }
@@ -139,13 +151,15 @@ export default {
   methods: {
     getList() {
       this.loading = true
-      treeCity().then(response => {
-        this.cityList = handleTree(response.data, 'cityId', 'parentId')
+      listCity(this.queryParams).then(response => {
+        this.cityList = response.rows
+        this.total = response.total
         this.loading = false
       })
     },
     getTreeselect() {
       treeCity().then(response => {
+        // 构建树形选择器数据，顶级节点parentId为0
         this.cityOptions = [{ cityId: 0, cityName: '顶级节点', children: handleTree(response.data, 'cityId', 'parentId') }]
       })
     },
@@ -167,9 +181,9 @@ export default {
     handleAdd(row) {
       this.reset()
       this.getTreeselect()
-      if (row != null) {
+      if (row != null && row.cityId) {
         this.form.parentId = row.cityId
-        this.form.level = row.level + 1
+        this.form.level = (row.level || 0) + 1
       }
       this.open = true
       this.title = '添加城市'
@@ -179,6 +193,10 @@ export default {
       this.getTreeselect()
       getCity(row.cityId).then(response => {
         this.form = response.data
+        // 确保parentId为数字类型
+        if (this.form.parentId === null || this.form.parentId === undefined) {
+          this.form.parentId = 0
+        }
         this.open = true
         this.title = '修改城市'
       })
@@ -218,6 +236,14 @@ export default {
         this.$modal.msgSuccess(text + '成功')
       }).catch(function() {
         row.status = row.status === '0' ? '1' : '0'
+      })
+    },
+    // 表格树形展开事件（可选，如果需要展开子节点）
+    loadChildren(tree, resolve) {
+      const parentId = tree.cityId
+      treeCity().then(response => {
+        const children = response.data.filter(item => item.parentId === parentId)
+        resolve(children)
       })
     }
   }
