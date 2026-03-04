@@ -1,4 +1,4 @@
-package com.ruoyi.system.controller.travel;
+package com.ruoyi.web.controller.travel;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
