@@ -63,7 +63,6 @@ public class TravelUserApiController extends BaseController
     public AjaxResult update(@RequestBody TravelUser travelUser)
     {
         Long userId = SecurityUtils.getUserId();
-        travelUser.setUserId(userId);
         return toAjax(travelUserService.updateTravelUser(travelUser));
     }
 
