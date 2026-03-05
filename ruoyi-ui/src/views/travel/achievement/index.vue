@@ -235,6 +235,14 @@ export default {
     this.getCityTree()
     this.getSpotList()
   },
+  watch: {
+    // 切换条件类型时清空已选择的项目
+    'form.conditionType'(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.selectedPlaces = []
+      }
+    }
+  },
   methods: {
     getList() {
       this.loading = true
