@@ -11,11 +11,6 @@ import com.ruoyi.system.domain.travel.TravelUser;
 public interface ITravelUserService
 {
     /**
-     * 根据用户ID查询用户信息
-     */
-    public TravelUser selectTravelUserById(Long userId);
-
-    /**
      * 根据手机号查询用户
      */
     public TravelUser selectTravelUserByPhone(String phone);
@@ -43,31 +38,31 @@ public interface ITravelUserService
     /**
      * 删除用户
      */
-    public int deleteTravelUserById(Long userId);
+    public int deleteTravelUserByPhone(String phone);
 
     /**
      * 批量删除用户
      */
-    public int deleteTravelUserByIds(Long[] userIds);
+    public int deleteTravelUserByPhones(String[] phones);
 
     /**
      * 更新用户头像
      */
-    public int updateAvatar(Long userId, String avatar);
+    public int updateAvatar(String phone, String avatar);
 
     /**
      * 更新用户昵称
      */
-    public int updateNickname(Long userId, String nickname);
+    public int updateNickname(String phone, String nickname);
 
     /**
      * 增加打卡次数
      */
-    public void incrementCheckinCount(Long userId);
+    public void incrementCheckinCount(String phone);
 
     /**
      * 增加城市/景点计数
      */
-    public void addNewCityCount(Long userId);
-    public void addNewSpotCount(Long userId);
+    public void addNewCityCount(String phone);
+    public void addNewSpotCount(String phone);
 }

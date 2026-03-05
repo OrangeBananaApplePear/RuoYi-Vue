@@ -5,8 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.ruoyi.system.mapper.travel.TravelUserMapper">
 
     <resultMap type="com.ruoyi.system.domain.travel.TravelUser" id="TravelUserResult">
-        <id     property="userId"         column="user_id"          />
-        <result property="phone"         column="phone"           />
+        <id     property="phone"         column="phone"           />
         <result property="nickname"       column="nickname"        />
         <result property="avatar"        column="avatar"          />
         <result property="totalCheckins" column="total_checkins"  />
@@ -19,20 +18,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
-    <select id="selectTravelUserById" parameterType="Long" resultMap="TravelUserResult">
-        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, app_account, app_password, create_time, update_time
-        from travel_user
-        where user_id = #{userId}
-    </select>
-
     <select id="selectTravelUserByPhone" parameterType="String" resultMap="TravelUserResult">
-        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, app_account, app_password, create_time, update_time
+        select phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, app_account, app_password, create_time, update_time
         from travel_user
         where phone = #{phone}
     </select>
 
     <select id="selectTravelUserList" parameterType="com.ruoyi.system.domain.travel.TravelUser" resultMap="TravelUserResult">
-        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, app_account, app_password, create_time, update_time
+        select phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, app_account, app_password, create_time, update_time
         from travel_user
         <where>
             <if test="phone != null and phone != ''">
@@ -45,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by create_time desc
     </select>
 
-    <insert id="insertTravelUser" parameterType="com.ruoyi.system.domain.travel.TravelUser" useGeneratedKeys="true" keyProperty="userId">
+    <insert id="insertTravelUser" parameterType="com.ruoyi.system.domain.travel.TravelUser">
         insert into travel_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="phone != null">phone,</if>
@@ -87,29 +80,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="appPassword != null">app_password = #{appPassword},</if>
             update_time = sysdate()
         </trim>
-        where user_id = #{userId}
+        where phone = #{phone}
     </update>
 
-    <update id="incrementCheckinCount" parameterType="Long">
-        update travel_user set total_checkins = total_checkins + 1 where user_id = #{userId}
+    <update id="incrementCheckinCount" parameterType="String">
+        update travel_user set total_checkins = total_checkins + 1 where phone = #{phone}
     </update>
 
-    <update id="incrementCityCount" parameterType="Long">
-        update travel_user set total_cities = total_cities + 1 where user_id = #{userId}
+    <update id="incrementCityCount" parameterType="String">
+        update travel_user set total_cities = total_cities + 1 where phone = #{phone}
     </update>
 
-    <update id="incrementSpotCount" parameterType="Long">
-        update travel_user set total_spots = total_spots + 1 where user_id = #{userId}
+    <update id="incrementSpotCount" parameterType="String">
+        update travel_user set total_spots = total_spots + 1 where phone = #{phone}
     </update>
 
-    <delete id="deleteTravelUserById" parameterType="Long">
-        delete from travel_user where user_id = #{userId}
+    <delete id="deleteTravelUserByPhone" parameterType="String">
+        delete from travel_user where phone = #{phone}
     </delete>
 
-    <delete id="deleteTravelUserByIds" parameterType="Long">
-        delete from travel_user where user_id in
-        <foreach item="userId" collection="array" open="(" separator="," close=")">
-            #{userId}
+    <delete id="deleteTravelUserByPhones" parameterType="String">
+        delete from travel_user where phone in
+        <foreach item="phone" collection="array" open="(" separator="," close=")">
+            #{phone}
         </foreach>
     </delete>
 

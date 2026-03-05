@@ -13,9 +13,6 @@ public class TravelUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 用户ID */
-    private Long userId;
-
     /** 手机号 */
     private String phone;
 
@@ -50,14 +47,6 @@ public class TravelUser extends BaseEntity
     /** 更新时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     public String getPhone() {
         return phone;

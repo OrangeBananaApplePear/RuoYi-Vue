@@ -19,12 +19,6 @@ public class TravelUserServiceImpl implements ITravelUserService
     private TravelUserMapper travelUserMapper;
 
     @Override
-    public TravelUser selectTravelUserById(Long userId)
-    {
-        return travelUserMapper.selectTravelUserById(userId);
-    }
-
-    @Override
     public TravelUser selectTravelUserByPhone(String phone)
     {
         return travelUserMapper.selectTravelUserByPhone(phone);
@@ -45,9 +39,8 @@ public class TravelUserServiceImpl implements ITravelUserService
         {
             return existUser;
         }
-        
-        // 创建新用户 - userId需要从RuoYi的sys_user表获取
-        // 这里暂时返回null，实际需要结合系统用户创建
+
+        // 创建新用户
         TravelUser newUser = new TravelUser();
         newUser.setPhone(phone);
         newUser.setNickname(nickname);
@@ -55,9 +48,9 @@ public class TravelUserServiceImpl implements ITravelUserService
         newUser.setTotalCities(0);
         newUser.setTotalSpots(0);
         newUser.setTotalAchievements(0);
-        
-        // 实际项目中需要先创建sys_user，然后获取userId
-        return null;
+
+        travelUserMapper.insertTravelUser(newUser);
+        return newUser;
     }
 
     @Override
@@ -85,50 +78,50 @@ public class TravelUserServiceImpl implements ITravelUserService
     }
 
     @Override
-    public int deleteTravelUserById(Long userId)
+    public int deleteTravelUserByPhone(String phone)
     {
-        return travelUserMapper.deleteTravelUserById(userId);
+        return travelUserMapper.deleteTravelUserByPhone(phone);
     }
 
     @Override
-    public int deleteTravelUserByIds(Long[] userIds)
+    public int deleteTravelUserByPhones(String[] phones)
     {
-        return travelUserMapper.deleteTravelUserByIds(userIds);
+        return travelUserMapper.deleteTravelUserByPhones(phones);
     }
 
     @Override
-    public int updateAvatar(Long userId, String avatar)
+    public int updateAvatar(String phone, String avatar)
     {
         TravelUser user = new TravelUser();
-        user.setUserId(userId);
+        user.setPhone(phone);
         user.setAvatar(avatar);
         return travelUserMapper.updateTravelUser(user);
     }
 
     @Override
-    public int updateNickname(Long userId, String nickname)
+    public int updateNickname(String phone, String nickname)
     {
         TravelUser user = new TravelUser();
-        user.setUserId(userId);
+        user.setPhone(phone);
         user.setNickname(nickname);
         return travelUserMapper.updateTravelUser(user);
     }
 
     @Override
-    public void incrementCheckinCount(Long userId)
+    public void incrementCheckinCount(String phone)
     {
-        travelUserMapper.incrementCheckinCount(userId);
+        travelUserMapper.incrementCheckinCount(phone);
     }
 
     @Override
-    public void addNewCityCount(Long userId)
+    public void addNewCityCount(String phone)
     {
-        travelUserMapper.incrementCityCount(userId);
+        travelUserMapper.incrementCityCount(phone);
     }
 
     @Override
-    public void addNewSpotCount(Long userId)
+    public void addNewSpotCount(String phone)
     {
-        travelUserMapper.incrementSpotCount(userId);
+        travelUserMapper.incrementSpotCount(phone);
     }
 }
