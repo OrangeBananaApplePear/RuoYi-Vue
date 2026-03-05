@@ -129,9 +129,10 @@
               <el-cascader v-if="form.conditionType === 'city'"
                 v-model="selectedPlaces"
                 :options="cityTreeList"
-                :props="{value: 'cityId', label: 'cityName', children: 'children', checkStrictly: true, emitPath: false}"
+                :props="{value: 'cityId', label: 'cityName', children: 'children', checkStrictly: true}"
                 placeholder="请选择城市（可多选）"
                 multiple
+                collapse-tags
                 clearable
                 style="width: 100%"
               />
@@ -211,7 +212,7 @@ export default {
       })
     },
     getSpotList() {
-      listSpot({}).then(response => {
+      listSpot({ pageNum: 1, pageSize: 1000 }).then(response => {
         this.spotList = response.rows || []
       })
     },
@@ -250,7 +251,9 @@ export default {
         // 解析JSON字段
         if (this.form.conditionCities) {
           try {
-            this.selectedPlaces = JSON.parse(this.form.conditionCities)
+            const cityIds = JSON.parse(this.form.conditionCities)
+            // el-cascader multiple 需要数组的数组格式
+            this.selectedPlaces = cityIds.map(id => [id])
           } catch (e) {
             this.selectedPlaces = []
           }
@@ -278,7 +281,12 @@ export default {
         if (valid) {
           // 处理条件数据
           if (this.form.conditionType === 'city') {
-            this.form.conditionCities = JSON.stringify(this.selectedPlaces)
+            // el-cascader multiple 返回数组的数组，需要扁平化
+            let cityIds = this.selectedPlaces
+            if (cityIds.length > 0 && Array.isArray(cityIds[0])) {
+              cityIds = cityIds.flat()
+            }
+            this.form.conditionCities = JSON.stringify(cityIds)
             this.form.conditionSpots = ''
           } else {
             this.form.conditionCities = ''
