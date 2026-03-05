@@ -381,21 +381,29 @@ export default {
       this.title = '添加成就'
     },
     handleUpdate(row) {
-      this.reset()
       const achievementId = row.achievementId || this.ids
       getAchievement(achievementId).then(response => {
         this.form = response.data
-        // 解析JSON字段
+        this.selectedMonths = []
+        this.selectedPlaces = []
+        this.tempCityPlaces = []
+        this.tempSpotPlaces = []
+        
+        // 解析JSON字段并设置对应的临时保存
         if (this.form.conditionCities) {
           try {
-            this.selectedPlaces = JSON.parse(this.form.conditionCities)
+            const cityIds = JSON.parse(this.form.conditionCities)
+            this.selectedPlaces = cityIds
+            this.tempCityPlaces = cityIds
           } catch (e) {
             this.selectedPlaces = []
           }
         }
         if (this.form.conditionSpots) {
           try {
-            this.selectedPlaces = JSON.parse(this.form.conditionSpots)
+            const spotIds = JSON.parse(this.form.conditionSpots)
+            this.selectedPlaces = spotIds
+            this.tempSpotPlaces = spotIds
           } catch (e) {
             this.selectedPlaces = []
           }
