@@ -216,7 +216,6 @@ export default {
       // 临时保存城市/景点的选择
       tempCityPlaces: [],
       tempSpotPlaces: [],
-      hasNewSelection: false,
       ids: [],
       multiple: true,
       showSearch: true,
@@ -240,35 +239,35 @@ export default {
     this.getSpotList()
   },
   watch: {
-    // 切换条件类型时隐藏已选择的项目，切换回来时恢复
+    // 切换条件类型时
     'form.conditionType'(newVal, oldVal) {
       if (newVal !== oldVal) {
-        // 保存当前选择到临时变量（只有有值时才保存）
+        // 切换时保存当前选择到对应类型的临时变量
         if (oldVal === 'city' && this.selectedPlaces.length > 0) {
           this.tempCityPlaces = [...this.selectedPlaces]
         } else if (oldVal === 'spot' && this.selectedPlaces.length > 0) {
           this.tempSpotPlaces = [...this.selectedPlaces]
         }
-        // 清空当前选择，并标记用户还未做出新选择
+        // 切换到新类型时，清空当前选择
         this.selectedPlaces = []
-        this.hasNewSelection = false
-        // 如果之前有保存的选择，恢复它
-        if (newVal === 'city' && this.tempCityPlaces.length > 0 && !this.hasNewSelection) {
+        // 如果之前有保存的选择且现在没有新选择，则恢复
+        if (newVal === 'city' && this.tempCityPlaces.length > 0) {
           this.selectedPlaces = [...this.tempCityPlaces]
-        } else if (newVal === 'spot' && this.tempSpotPlaces.length > 0 && !this.hasNewSelection) {
+        } else if (newVal === 'spot' && this.tempSpotPlaces.length > 0) {
           this.selectedPlaces = [...this.tempSpotPlaces]
         }
       }
     },
-    // 监听用户是否做出了 selected新选择
-   Places(newVal) {
-      // 如果之前有临时保存的选择，且现在有新选择，则清除旧的临时保存
-      if (this.form.conditionType === 'city' && newVal.length > 0 && this.tempSpotPlaces.length > 0) {
-        this.tempSpotPlaces = []
-        this.hasNewSelection = true
-      } else if (this.form.conditionType === 'spot' && newVal.length > 0 && this.tempCityPlaces.length > 0) {
-        this.tempCityPlaces = []
-        this.hasNewSelection = true
+    // 监听选择变化，一旦用户做了新选择就清除旧类型的临时保存
+    selectedPlaces(newVal) {
+      if (newVal.length > 0) {
+        if (this.form.conditionType === 'city' && this.tempSpotPlaces.length > 0) {
+          // 城市有新选择，清除景点的临时保存
+          this.tempSpotPlaces = []
+        } else if (this.form.conditionType === 'spot' && this.tempCityPlaces.length > 0) {
+          // 景点有新选择，清除城市的临时保存
+          this.tempCityPlaces = []
+        }
       }
     }
   },
@@ -353,7 +352,6 @@ export default {
       // 重置临时保存的选择
       this.tempCityPlaces = []
       this.tempSpotPlaces = []
-      this.hasNewSelection = false
       // 重置城市和景点分页
       this.cityPageNum = 1
       this.cityKeyword = ''
