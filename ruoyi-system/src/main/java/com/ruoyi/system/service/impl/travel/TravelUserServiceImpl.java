@@ -62,7 +62,6 @@ public class TravelUserServiceImpl implements ITravelUserService
     public int updateAvatar(Long userId, String avatar)
     {
         TravelUser user = new TravelUser();
-        user.setUserId(userId);
         user.setAvatar(avatar);
         return travelUserMapper.updateTravelUser(user);
     }
@@ -71,7 +70,6 @@ public class TravelUserServiceImpl implements ITravelUserService
     public int updateNickname(Long userId, String nickname)
     {
         TravelUser user = new TravelUser();
-        user.setUserId(userId);
         user.setNickname(nickname);
         return travelUserMapper.updateTravelUser(user);
     }
