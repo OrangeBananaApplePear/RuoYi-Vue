@@ -213,6 +213,9 @@ export default {
       spotKeyword: '',
       spotHasMore: true,
       spotLoading: false,
+      // 临时保存城市/景点的选择
+      tempCityPlaces: [],
+      tempSpotPlaces: [],
       ids: [],
       multiple: true,
       showSearch: true,
@@ -236,10 +239,23 @@ export default {
     this.getSpotList()
   },
   watch: {
-    // 切换条件类型时清空已选择的项目
+    // 切换条件类型时隐藏已选择的项目，切换回来时恢复
     'form.conditionType'(newVal, oldVal) {
       if (newVal !== oldVal) {
+        // 保存当前选择到临时变量（只有有值时才保存）
+        if (oldVal === 'city' && this.selectedPlaces.length > 0) {
+          this.tempCityPlaces = [...this.selectedPlaces]
+        } else if (oldVal === 'spot' && this.selectedPlaces.length > 0) {
+          this.tempSpotPlaces = [...this.selectedPlaces]
+        }
+        // 清空当前选择
         this.selectedPlaces = []
+        // 如果之前有保存的选择，恢复它
+        if (newVal === 'city' && this.tempCityPlaces.length > 0) {
+          this.selectedPlaces = [...this.tempCityPlaces]
+        } else if (newVal === 'spot' && this.tempSpotPlaces.length > 0) {
+          this.selectedPlaces = [...this.tempSpotPlaces]
+        }
       }
     }
   },
@@ -321,6 +337,9 @@ export default {
       this.form = { achievementId: undefined, achievementName: undefined, icon: '', description: '', conditionType: 'city', conditionCities: '', conditionSpots: '', timeType: 'any', months: '', status: '0', remark: '' }
       this.selectedMonths = []
       this.selectedPlaces = []
+      // 重置临时保存的选择
+      this.tempCityPlaces = []
+      this.tempSpotPlaces = []
       // 重置城市和景点分页
       this.cityPageNum = 1
       this.cityKeyword = ''
