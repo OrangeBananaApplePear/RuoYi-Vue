@@ -13,6 +13,9 @@ public class TravelUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    /** 用户ID（APP用户主键，自增） */
+    private Long userId;
+
     /** 手机号 */
     private String phone;
 
@@ -134,5 +137,13 @@ public class TravelUser extends BaseEntity
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

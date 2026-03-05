@@ -11,6 +11,11 @@ import com.ruoyi.system.domain.travel.TravelUser;
 public interface TravelUserMapper
 {
     /**
+     * 根据用户ID查询
+     */
+    public TravelUser selectTravelUserById(Long userId);
+
+    /**
      * 根据手机号查询
      */
     public TravelUser selectTravelUserByPhone(String phone);
@@ -33,25 +38,25 @@ public interface TravelUserMapper
     /**
      * 删除用户
      */
-    public int deleteTravelUserByPhone(String phone);
+    public int deleteTravelUserById(Long userId);
 
     /**
      * 批量删除用户
      */
-    public int deleteTravelUserByPhones(String[] phones);
+    public int deleteTravelUserByIds(Long[] userIds);
 
     /**
      * 增加打卡次数
      */
-    public int incrementCheckinCount(String phone);
+    public int incrementCheckinCount(Long userId);
 
     /**
      * 增加已打卡城市数
      */
-    public int incrementCityCount(String phone);
+    public int incrementCityCount(Long userId);
 
     /**
      * 增加已打卡景点数
      */
-    public int incrementSpotCount(String phone);
+    public int incrementSpotCount(Long userId);
 }

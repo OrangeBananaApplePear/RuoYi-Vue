@@ -8,9 +8,9 @@ export function listUser(query) {
   })
 }
 
-export function getUser(phone) {
+export function getUser(userId) {
   return request({
-    url: '/travel/user/' + phone,
+    url: '/travel/user/' + userId,
     method: 'get'
   })
 }
@@ -31,9 +31,9 @@ export function updateUser(data) {
   })
 }
 
-export function delUser(phones) {
+export function delUser(userId) {
   return request({
-    url: '/travel/user/' + phones,
+    url: '/travel/user/' + userId,
     method: 'delete'
   })
 }

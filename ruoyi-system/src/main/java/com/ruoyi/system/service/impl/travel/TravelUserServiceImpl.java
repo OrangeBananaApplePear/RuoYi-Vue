@@ -19,6 +19,12 @@ public class TravelUserServiceImpl implements ITravelUserService
     private TravelUserMapper travelUserMapper;
 
     @Override
+    public TravelUser selectTravelUserById(Long userId)
+    {
+        return travelUserMapper.selectTravelUserById(userId);
+    }
+
+    @Override
     public TravelUser selectTravelUserByPhone(String phone)
     {
         return travelUserMapper.selectTravelUserByPhone(phone);
@@ -78,50 +84,50 @@ public class TravelUserServiceImpl implements ITravelUserService
     }
 
     @Override
-    public int deleteTravelUserByPhone(String phone)
+    public int deleteTravelUserById(Long userId)
     {
-        return travelUserMapper.deleteTravelUserByPhone(phone);
+        return travelUserMapper.deleteTravelUserById(userId);
     }
 
     @Override
-    public int deleteTravelUserByPhones(String[] phones)
+    public int deleteTravelUserByIds(Long[] userIds)
     {
-        return travelUserMapper.deleteTravelUserByPhones(phones);
+        return travelUserMapper.deleteTravelUserByIds(userIds);
     }
 
     @Override
-    public int updateAvatar(String phone, String avatar)
+    public int updateAvatar(Long userId, String avatar)
     {
         TravelUser user = new TravelUser();
-        user.setPhone(phone);
+        user.setUserId(userId);
         user.setAvatar(avatar);
         return travelUserMapper.updateTravelUser(user);
     }
 
     @Override
-    public int updateNickname(String phone, String nickname)
+    public int updateNickname(Long userId, String nickname)
     {
         TravelUser user = new TravelUser();
-        user.setPhone(phone);
+        user.setUserId(userId);
         user.setNickname(nickname);
         return travelUserMapper.updateTravelUser(user);
     }
 
     @Override
-    public void incrementCheckinCount(String phone)
+    public void incrementCheckinCount(Long userId)
     {
-        travelUserMapper.incrementCheckinCount(phone);
+        travelUserMapper.incrementCheckinCount(userId);
     }
 
     @Override
-    public void addNewCityCount(String phone)
+    public void addNewCityCount(Long userId)
     {
-        travelUserMapper.incrementCityCount(phone);
+        travelUserMapper.incrementCityCount(userId);
     }
 
     @Override
-    public void addNewSpotCount(String phone)
+    public void addNewSpotCount(Long userId)
     {
-        travelUserMapper.incrementSpotCount(phone);
+        travelUserMapper.incrementSpotCount(userId);
     }
 }

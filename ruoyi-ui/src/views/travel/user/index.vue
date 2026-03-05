@@ -28,6 +28,7 @@
     <!-- 表格 -->
     <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="用户ID" align="center" prop="userId" width="80" />
       <el-table-column label="头像" align="center" width="80">
         <template slot-scope="scope">
           <el-avatar v-if="scope.row.avatar" :src="scope.row.avatar" :size="40" />
@@ -160,6 +161,7 @@ export default {
     },
     reset() {
       this.form = {
+        userId: undefined,
         phone: undefined,
         nickname: undefined,
         avatar: '',
@@ -181,7 +183,7 @@ export default {
       this.handleQuery()
     },
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.phone)
+      this.ids = selection.map(item => item.userId)
       this.multiple = !selection.length
     },
     handleAdd() {
@@ -191,8 +193,8 @@ export default {
     },
     handleUpdate(row) {
       this.reset()
-      const phone = row.phone || this.ids[0]
-      getUser(phone).then(response => {
+      const userId = row.userId || this.ids[0]
+      getUser(userId).then(response => {
         this.form = response.data
         this.open = true
         this.title = '修改用户'
@@ -201,7 +203,7 @@ export default {
     submitForm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          if (this.form.phone != undefined) {
+          if (this.form.userId != undefined) {
             updateUser(this.form).then(() => {
               this.$modal.msgSuccess('修改成功')
               this.open = false
@@ -218,9 +220,9 @@ export default {
       })
     },
     handleDelete(row) {
-      const phones = row.phone || this.ids
-      this.$modal.confirm('是否确认删除手机号为"' + phones + '"的数据项?').then(function() {
-        return delUser(phones)
+      const userIds = row.userId || this.ids
+      this.$modal.confirm('是否确认删除用户ID为"' + userIds + '"的数据项?').then(function() {
+        return delUser(userIds)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess('删除成功')

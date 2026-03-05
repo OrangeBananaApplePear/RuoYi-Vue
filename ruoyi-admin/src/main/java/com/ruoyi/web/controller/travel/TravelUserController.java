@@ -33,10 +33,10 @@ public class TravelUserController extends BaseController
     /**
      * 获取用户详情
      */
-    @GetMapping("/{phone}")
-    public AjaxResult get(@PathVariable String phone)
+    @GetMapping("/{userId}")
+    public AjaxResult get(@PathVariable Long userId)
     {
-        return success(travelUserService.selectTravelUserByPhone(phone));
+        return success(travelUserService.selectTravelUserById(userId));
     }
 
     /**
@@ -60,9 +60,9 @@ public class TravelUserController extends BaseController
     /**
      * 删除用户
      */
-    @DeleteMapping("/{phones}")
-    public AjaxResult remove(@PathVariable String[] phones)
+    @DeleteMapping("/{userIds}")
+    public AjaxResult remove(@PathVariable Long[] userIds)
     {
-        return toAjax(travelUserService.deleteTravelUserByPhones(phones));
+        return toAjax(travelUserService.deleteTravelUserByIds(userIds));
     }
 }
