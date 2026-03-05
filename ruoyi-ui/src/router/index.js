@@ -161,32 +161,6 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  },
-  // 旅途管理
-  {
-    path: '/travel',
-    component: Layout,
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'city',
-        component: () => import('@/views/travel/city/index'),
-        name: 'TravelCity',
-        meta: { title: '城市管理', icon: 'city' }
-      },
-      {
-        path: 'spot',
-        component: () => import('@/views/travel/spot/index'),
-        name: 'TravelSpot',
-        meta: { title: '景点管理', icon: 'spot' }
-      },
-      {
-        path: 'checkin',
-        component: () => import('@/views/travel/checkin/index'),
-        name: 'TravelCheckin',
-        meta: { title: '打卡管理', icon: 'check' }
-      }
-    ]
   }
 ]
 
