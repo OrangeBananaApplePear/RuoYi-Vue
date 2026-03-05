@@ -126,16 +126,26 @@
           <!-- 城市/景点选择 -->
           <el-col :span="24">
             <el-form-item :label="form.conditionType === 'city' ? '选择城市' : '选择景点'">
-              <el-tree-select v-if="form.conditionType === 'city'"
+              <el-select
+                v-if="form.conditionType === 'city'"
                 v-model="selectedPlaces"
-                :data="cityTreeList"
-                :props="{value: 'cityId', label: 'cityName', children: 'children'}"
-                placeholder="请选择城市（可多选）"
                 multiple
-                check-strictly
-                clearable
+                filterable
+                remote
+                reserve-keyword
+                placeholder="请输入城市名称搜索"
+                :remote-method="searchCity"
+                :loading="cityLoading"
                 style="width: 100%"
-              />
+              >
+                <el-option
+                  v-for="city in cityList"
+                  :key="city.cityId"
+                  :label="city.cityName"
+                  :value="city.cityId"
+                />
+                <el-option v-if="cityHasMore" label="加载更多..." value="" disabled @click.native="loadMoreCity" />
+              </el-select>
               <el-select
                 v-else
                 v-model="selectedPlaces"
@@ -191,6 +201,12 @@ export default {
       loading: true,
       achievementList: [],
       cityTreeList: [],
+      cityList: [],
+      cityPageNum: 1,
+      cityPageSize: 50,
+      cityKeyword: '',
+      cityHasMore: true,
+      cityLoading: false,
       spotList: [],
       spotPageNum: 1,
       spotPageSize: 50,
@@ -232,6 +248,34 @@ export default {
       treeCity().then(response => {
         this.cityTreeList = response.data || []
       })
+      // 获取城市列表（分页，用于选择）
+      this.loadCityList()
+    },
+    loadCityList() {
+      this.cityLoading = true
+      listCity({
+        pageNum: this.cityPageNum,
+        pageSize: this.cityPageSize,
+        cityName: this.cityKeyword || undefined
+      }).then(response => {
+        if (this.cityPageNum === 1) {
+          this.cityList = response.rows || []
+        } else {
+          this.cityList = [...this.cityList, ...(response.rows || [])]
+        }
+        this.cityHasMore = this.cityList.length < response.total
+        this.cityLoading = false
+      })
+    },
+    searchCity(query) {
+      this.cityKeyword = query
+      this.cityPageNum = 1
+      this.cityHasMore = true
+      this.loadCityList()
+    },
+    loadMoreCity() {
+      this.cityPageNum++
+      this.loadCityList()
     },
     getSpotList() {
       this.spotLoading = true
@@ -269,10 +313,14 @@ export default {
       this.form = { achievementId: undefined, achievementName: undefined, icon: '', description: '', conditionType: 'city', conditionCities: '', conditionSpots: '', timeType: 'any', months: '', status: '0', remark: '' }
       this.selectedMonths = []
       this.selectedPlaces = []
-      // 重置景点分页
+      // 重置城市和景点分页
+      this.cityPageNum = 1
+      this.cityKeyword = ''
+      this.cityHasMore = true
       this.spotPageNum = 1
       this.spotKeyword = ''
       this.spotHasMore = true
+      this.getCityTree()
       this.getSpotList()
       this.resetForm('form')
     },
@@ -301,7 +349,6 @@ export default {
         // 解析JSON字段
         if (this.form.conditionCities) {
           try {
-            // el-tree-select multiple 直接使用数组
             this.selectedPlaces = JSON.parse(this.form.conditionCities)
           } catch (e) {
             this.selectedPlaces = []
