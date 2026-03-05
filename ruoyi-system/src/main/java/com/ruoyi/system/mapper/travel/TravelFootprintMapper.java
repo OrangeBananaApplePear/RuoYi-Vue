@@ -31,6 +31,11 @@ public interface TravelFootprintMapper
     public List<TravelFootprint> selectSpotsByUserId(Long userId);
 
     /**
+     * 查询用户所有打卡记录（用于成就检测）
+     */
+    public List<TravelFootprint> selectTravelFootprintListByUserId(Long userId);
+
+    /**
      * 查询用户是否已打卡某城市
      */
     public TravelFootprint selectCityFootprint(Long userId, Long cityId);

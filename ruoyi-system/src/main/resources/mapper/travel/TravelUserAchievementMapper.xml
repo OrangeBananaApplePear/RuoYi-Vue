@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.travel.TravelUserAchievementMapper">
+
+    <resultMap type="com.ruoyi.system.domain.travel.TravelUserAchievement" id="TravelUserAchievementResult">
+        <id     property="id"              column="id"               />
+        <result property="userId"           column="user_id"         />
+        <result property="achievementId"   column="achievement_id"   />
+        <result property="achievedTime"     column="achieved_time"    />
+        <result property="createTime"       column="create_time"      />
+    </resultMap>
+
+    <resultMap type="com.ruoyi.system.domain.travel.TravelUserAchievement" id="TravelUserAchievementDetailResult" extends="TravelUserAchievementResult">
+        <association property="achievement" javaType="com.ruoyi.system.domain.travel.TravelAchievement">
+            <id     property="achievementId"    column="achievement_id"    />
+            <result property="achievementName"   column="achievement_name"   />
+            <result property="icon"             column="icon"              />
+            <result property="description"      column="description"       />
+        </association>
+    </resultMap>
+
+    <sql id="selectTravelUserAchievementVo">
+        select id, user_id, achievement_id, achieved_time, create_time
+        from travel_user_achievement
+    </sql>
+
+    <select id="selectUserAchievementById" parameterType="Long" resultMap="TravelUserAchievementResult">
+        <include refid="selectTravelUserAchievementVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectUserAchievementList" parameterType="com.ruoyi.system.domain.travel.TravelUserAchievement" resultMap="TravelUserAchievementDetailResult">
+        select u.id, u.user_id, u.achievement_id, u.achieved_time, u.create_time,
+               a.achievement_name, a.icon, a.description
+        from travel_user_achievement u
+        left join travel_achievement a on u.achievement_id = a.achievement_id
+        <where>
+            <if test="userId != null">
+                AND u.user_id = #{userId}
+            </if>
+            <if test="achievementId != null">
+                AND u.achievement_id = #{achievementId}
+            </if>
+        </where>
+        order by u.achieved_time desc
+    </select>
+
+    <select id="selectAchievedAchievementIds" parameterType="Long" resultType="Long">
+        select achievement_id from travel_user_achievement where user_id = #{userId}
+    </select>
+
+    <select id="checkUserAchievementExists" resultType="int">
+        select count(1) from travel_user_achievement 
+        where user_id = #{userId} and achievement_id = #{achievementId}
+    </select>
+
+    <insert id="insertUserAchievement" parameterType="com.ruoyi.system.domain.travel.TravelUserAchievement">
+        insert into travel_user_achievement
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="achievementId != null">achievement_id,</if>
+            <if test="achievedTime != null">achieved_time,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="achievementId != null">#{achievementId},</if>
+            <if test="achievedTime != null">#{achievedTime},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <delete id="deleteUserAchievementById" parameterType="Long">
+        delete from travel_user_achievement where id = #{id}
+    </delete>
+
+    <delete id="deleteUserAchievementByIds" parameterType="Long">
+        delete from travel_user_achievement where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
