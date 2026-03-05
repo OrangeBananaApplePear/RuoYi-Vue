@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl.travel;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.travel.TravelUser;
@@ -30,6 +31,12 @@ public class TravelUserServiceImpl implements ITravelUserService
     }
 
     @Override
+    public List<TravelUser> selectTravelUserList(TravelUser travelUser)
+    {
+        return travelUserMapper.selectTravelUserList(travelUser);
+    }
+
+    @Override
     public TravelUser createUser(String phone, String nickname)
     {
         // 先查询是否已存在
@@ -47,9 +54,28 @@ public class TravelUserServiceImpl implements ITravelUserService
         newUser.setTotalCheckins(0);
         newUser.setTotalCities(0);
         newUser.setTotalSpots(0);
+        newUser.setTotalAchievements(0);
         
         // 实际项目中需要先创建sys_user，然后获取userId
         return null;
+    }
+
+    @Override
+    public int insertTravelUser(TravelUser travelUser)
+    {
+        if (travelUser.getTotalCheckins() == null) {
+            travelUser.setTotalCheckins(0);
+        }
+        if (travelUser.getTotalCities() == null) {
+            travelUser.setTotalCities(0);
+        }
+        if (travelUser.getTotalSpots() == null) {
+            travelUser.setTotalSpots(0);
+        }
+        if (travelUser.getTotalAchievements() == null) {
+            travelUser.setTotalAchievements(0);
+        }
+        return travelUserMapper.insertTravelUser(travelUser);
     }
 
     @Override
@@ -59,9 +85,22 @@ public class TravelUserServiceImpl implements ITravelUserService
     }
 
     @Override
+    public int deleteTravelUserById(Long userId)
+    {
+        return travelUserMapper.deleteTravelUserById(userId);
+    }
+
+    @Override
+    public int deleteTravelUserByIds(Long[] userIds)
+    {
+        return travelUserMapper.deleteTravelUserByIds(userIds);
+    }
+
+    @Override
     public int updateAvatar(Long userId, String avatar)
     {
         TravelUser user = new TravelUser();
+        user.setUserId(userId);
         user.setAvatar(avatar);
         return travelUserMapper.updateTravelUser(user);
     }
@@ -70,6 +109,7 @@ public class TravelUserServiceImpl implements ITravelUserService
     public int updateNickname(Long userId, String nickname)
     {
         TravelUser user = new TravelUser();
+        user.setUserId(userId);
         user.setNickname(nickname);
         return travelUserMapper.updateTravelUser(user);
     }

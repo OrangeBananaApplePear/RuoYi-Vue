@@ -12,42 +12,57 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="totalCheckins" column="total_checkins"  />
         <result property="totalCities"   column="total_cities"    />
         <result property="totalSpots"    column="total_spots"     />
+        <result property="totalAchievements" column="total_achievements" />
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <select id="selectTravelUserById" parameterType="Long" resultMap="TravelUserResult">
-        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, create_time, update_time
+        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, create_time, update_time
         from travel_user
         where user_id = #{userId}
     </select>
 
     <select id="selectTravelUserByPhone" parameterType="String" resultMap="TravelUserResult">
-        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, create_time, update_time
+        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, create_time, update_time
         from travel_user
         where phone = #{phone}
     </select>
 
-    <insert id="insertTravelUser" parameterType="com.ruoyi.system.domain.travel.TravelUser">
+    <select id="selectTravelUserList" parameterType="com.ruoyi.system.domain.travel.TravelUser" resultMap="TravelUserResult">
+        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, create_time, update_time
+        from travel_user
+        <where>
+            <if test="phone != null and phone != ''">
+                AND phone like concat('%', #{phone}, '%')
+            </if>
+            <if test="nickname != null and nickname != ''">
+                AND nickname like concat('%', #{nickname}, '%')
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insertTravelUser" parameterType="com.ruoyi.system.domain.travel.TravelUser" useGeneratedKeys="true" keyProperty="userId">
         insert into travel_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="userId != null">user_id,</if>
             <if test="phone != null">phone,</if>
             <if test="nickname != null">nickname,</if>
             <if test="avatar != null">avatar,</if>
             <if test="totalCheckins != null">total_checkins,</if>
             <if test="totalCities != null">total_cities,</if>
             <if test="totalSpots != null">total_spots,</if>
+            <if test="totalAchievements != null">total_achievements,</if>
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="userId != null">#{userId},</if>
             <if test="phone != null">#{phone},</if>
             <if test="nickname != null">#{nickname},</if>
             <if test="avatar != null">#{avatar},</if>
             <if test="totalCheckins != null">#{totalCheckins},</if>
             <if test="totalCities != null">#{totalCities},</if>
             <if test="totalSpots != null">#{totalSpots},</if>
+            <if test="totalAchievements != null">#{totalAchievements},</if>
             sysdate()
         </trim>
     </insert>
@@ -61,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalCheckins != null">total_checkins = #{totalCheckins},</if>
             <if test="totalCities != null">total_cities = #{totalCities},</if>
             <if test="totalSpots != null">total_spots = #{totalSpots},</if>
+            <if test="totalAchievements != null">total_achievements = #{totalAchievements},</if>
             update_time = sysdate()
         </trim>
         where user_id = #{userId}
@@ -77,5 +93,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="incrementSpotCount" parameterType="Long">
         update travel_user set total_spots = total_spots + 1 where user_id = #{userId}
     </update>
+
+    <delete id="deleteTravelUserById" parameterType="Long">
+        delete from travel_user where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteTravelUserByIds" parameterType="Long">
+        delete from travel_user where user_id in
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
 
 </mapper>

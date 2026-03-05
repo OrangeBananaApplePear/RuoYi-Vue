@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.travel;
 
+import java.util.List;
 import com.ruoyi.system.domain.travel.TravelUser;
 
 /**
@@ -20,14 +21,34 @@ public interface ITravelUserService
     public TravelUser selectTravelUserByPhone(String phone);
 
     /**
+     * 查询用户列表
+     */
+    public List<TravelUser> selectTravelUserList(TravelUser travelUser);
+
+    /**
      * 注册/创建用户
      */
     public TravelUser createUser(String phone, String nickname);
 
     /**
+     * 新增用户
+     */
+    public int insertTravelUser(TravelUser travelUser);
+
+    /**
      * 更新用户信息
      */
     public int updateTravelUser(TravelUser travelUser);
+
+    /**
+     * 删除用户
+     */
+    public int deleteTravelUserById(Long userId);
+
+    /**
+     * 批量删除用户
+     */
+    public int deleteTravelUserByIds(Long[] userIds);
 
     /**
      * 更新用户头像

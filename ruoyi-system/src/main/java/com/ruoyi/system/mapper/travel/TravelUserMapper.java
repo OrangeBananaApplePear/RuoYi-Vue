@@ -1,5 +1,6 @@
 package com.ruoyi.system.mapper.travel;
 
+import java.util.List;
 import com.ruoyi.system.domain.travel.TravelUser;
 
 /**
@@ -20,6 +21,11 @@ public interface TravelUserMapper
     public TravelUser selectTravelUserByPhone(String phone);
 
     /**
+     * 查询用户列表
+     */
+    public List<TravelUser> selectTravelUserList(TravelUser travelUser);
+
+    /**
      * 新增用户扩展信息
      */
     public int insertTravelUser(TravelUser travelUser);
@@ -28,6 +34,16 @@ public interface TravelUserMapper
      * 修改用户扩展信息
      */
     public int updateTravelUser(TravelUser travelUser);
+
+    /**
+     * 删除用户
+     */
+    public int deleteTravelUserById(Long userId);
+
+    /**
+     * 批量删除用户
+     */
+    public int deleteTravelUserByIds(Long[] userIds);
 
     /**
      * 增加打卡次数

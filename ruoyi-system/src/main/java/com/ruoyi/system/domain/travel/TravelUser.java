@@ -12,6 +12,9 @@ public class TravelUser extends com.ruoyi.common.core.domain.BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    /** 用户ID */
+    private Long userId;
+
     /** 手机号 */
     private String phone;
 
@@ -30,6 +33,9 @@ public class TravelUser extends com.ruoyi.common.core.domain.BaseEntity
     /** 已打卡景点数 */
     private Integer totalSpots;
 
+    /** 已获得成就数 */
+    private Integer totalAchievements;
+
     /** 注册时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
@@ -37,6 +43,14 @@ public class TravelUser extends com.ruoyi.common.core.domain.BaseEntity
     /** 更新时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public String getPhone() {
         return phone;
@@ -84,6 +98,14 @@ public class TravelUser extends com.ruoyi.common.core.domain.BaseEntity
 
     public void setTotalSpots(Integer totalSpots) {
         this.totalSpots = totalSpots;
+    }
+
+    public Integer getTotalAchievements() {
+        return totalAchievements;
+    }
+
+    public void setTotalAchievements(Integer totalAchievements) {
+        this.totalAchievements = totalAchievements;
     }
 
     public Date getCreateTime() {
