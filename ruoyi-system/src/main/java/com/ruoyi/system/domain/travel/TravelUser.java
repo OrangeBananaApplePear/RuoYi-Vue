@@ -36,6 +36,12 @@ public class TravelUser extends com.ruoyi.common.core.domain.BaseEntity
     /** 已获得成就数 */
     private Integer totalAchievements;
 
+    /** APP账号 */
+    private String appAccount;
+
+    /** APP密码 */
+    private String appPassword;
+
     /** 注册时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
@@ -106,6 +112,22 @@ public class TravelUser extends com.ruoyi.common.core.domain.BaseEntity
 
     public void setTotalAchievements(Integer totalAchievements) {
         this.totalAchievements = totalAchievements;
+    }
+
+    public String getAppAccount() {
+        return appAccount;
+    }
+
+    public void setAppAccount(String appAccount) {
+        this.appAccount = appAccount;
+    }
+
+    public String getAppPassword() {
+        return appPassword;
+    }
+
+    public void setAppPassword(String appPassword) {
+        this.appPassword = appPassword;
     }
 
     public Date getCreateTime() {

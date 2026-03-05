@@ -66,29 +66,49 @@
               <el-input v-model="form.nickname" placeholder="请输入昵称" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="24">
             <el-form-item label="头像">
               <image-upload v-model="form.avatar" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+        </el-row>
+        <!-- APP登录信息 -->
+        <el-divider content-position="left">APP登录信息</el-divider>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="APP账号" prop="appAccount">
+              <el-input v-model="form.appAccount" placeholder="请输入APP账号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="APP密码" prop="appPassword">
+              <el-input v-model="form.appPassword" placeholder="请输入APP密码" type="password" show-password />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!-- 打卡统计（只读） -->
+        <el-divider content-position="left">打卡统计</el-divider>
+        <el-row>
+          <el-col :span="6">
             <el-form-item label="累计打卡">
-              <el-input-number v-model="form.totalCheckins" :min="0" />
+              <el-input v-model="form.totalCheckins" disabled />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="已打卡城市">
-              <el-input-number v-model="form.totalCities" :min="0" />
+              <el-input v-model="form.totalCities" disabled />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="已打卡景点">
-              <el-input-number v-model="form.totalSpots" :min="0" />
+              <el-input v-model="form.totalSpots" disabled />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="已获成就">
-              <el-input-number v-model="form.totalAchievements" :min="0" />
+              <el-input v-model="form.totalAchievements" disabled />
             </el-form-item>
           </el-col>
         </el-row>
@@ -140,7 +160,18 @@ export default {
       this.reset()
     },
     reset() {
-      this.form = { userId: undefined, phone: undefined, nickname: undefined, avatar: '', totalCheckins: 0, totalCities: 0, totalSpots: 0, totalAchievements: 0 }
+      this.form = {
+        userId: undefined,
+        phone: undefined,
+        nickname: undefined,
+        avatar: '',
+        totalCheckins: 0,
+        totalCities: 0,
+        totalSpots: 0,
+        totalAchievements: 0,
+        appAccount: undefined,
+        appPassword: undefined
+      }
       this.resetForm('form')
     },
     handleQuery() {

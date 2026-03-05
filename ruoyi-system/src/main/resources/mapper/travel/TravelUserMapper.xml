@@ -13,24 +13,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="totalCities"   column="total_cities"    />
         <result property="totalSpots"    column="total_spots"     />
         <result property="totalAchievements" column="total_achievements" />
+        <result property="appAccount"    column="app_account"    />
+        <result property="appPassword"   column="app_password"   />
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <select id="selectTravelUserById" parameterType="Long" resultMap="TravelUserResult">
-        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, create_time, update_time
+        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, app_account, app_password, create_time, update_time
         from travel_user
         where user_id = #{userId}
     </select>
 
     <select id="selectTravelUserByPhone" parameterType="String" resultMap="TravelUserResult">
-        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, create_time, update_time
+        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, app_account, app_password, create_time, update_time
         from travel_user
         where phone = #{phone}
     </select>
 
     <select id="selectTravelUserList" parameterType="com.ruoyi.system.domain.travel.TravelUser" resultMap="TravelUserResult">
-        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, create_time, update_time
+        select user_id, phone, nickname, avatar, total_checkins, total_cities, total_spots, total_achievements, app_account, app_password, create_time, update_time
         from travel_user
         <where>
             <if test="phone != null and phone != ''">
@@ -53,6 +55,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalCities != null">total_cities,</if>
             <if test="totalSpots != null">total_spots,</if>
             <if test="totalAchievements != null">total_achievements,</if>
+            <if test="appAccount != null">app_account,</if>
+            <if test="appPassword != null">app_password,</if>
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -63,6 +67,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalCities != null">#{totalCities},</if>
             <if test="totalSpots != null">#{totalSpots},</if>
             <if test="totalAchievements != null">#{totalAchievements},</if>
+            <if test="appAccount != null">#{appAccount},</if>
+            <if test="appPassword != null">#{appPassword},</if>
             sysdate()
         </trim>
     </insert>
@@ -77,6 +83,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalCities != null">total_cities = #{totalCities},</if>
             <if test="totalSpots != null">total_spots = #{totalSpots},</if>
             <if test="totalAchievements != null">total_achievements = #{totalAchievements},</if>
+            <if test="appAccount != null">app_account = #{appAccount},</if>
+            <if test="appPassword != null">app_password = #{appPassword},</if>
             update_time = sysdate()
         </trim>
         where user_id = #{userId}
