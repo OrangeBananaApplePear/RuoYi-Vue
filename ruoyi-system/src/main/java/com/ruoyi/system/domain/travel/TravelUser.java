@@ -2,13 +2,14 @@ package com.ruoyi.system.domain.travel;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 用户扩展对象 travel_user
  * 
  * @author 旅途
  */
-public class TravelUser extends com.ruoyi.common.core.domain.BaseEntity
+public class TravelUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
