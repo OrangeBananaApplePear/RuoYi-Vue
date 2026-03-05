@@ -136,8 +136,25 @@
                 clearable
                 style="width: 100%"
               />
-              <el-select v-else v-model="selectedPlaces" multiple placeholder="请选择景点" style="width: 100%">
-                <el-option v-for="spot in spotList" :key="spot.spotId" :label="spot.spotName" :value="spot.spotId" />
+              <el-select
+                v-else
+                v-model="selectedPlaces"
+                multiple
+                filterable
+                remote
+                reserve-keyword
+                placeholder="请输入景点名称搜索"
+                :remote-method="searchSpot"
+                :loading="spotLoading"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="spot in spotList"
+                  :key="spot.spotId"
+                  :label="spot.spotName"
+                  :value="spot.spotId"
+                />
+                <el-option v-if="spotHasMore" label="加载更多..." value="" disabled @click.native="loadMoreSpot" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -175,6 +192,11 @@ export default {
       achievementList: [],
       cityTreeList: [],
       spotList: [],
+      spotPageNum: 1,
+      spotPageSize: 50,
+      spotKeyword: '',
+      spotHasMore: true,
+      spotLoading: false,
       ids: [],
       multiple: true,
       showSearch: true,
@@ -212,9 +234,32 @@ export default {
       })
     },
     getSpotList() {
-      listSpot({ pageNum: 1, pageSize: 1000 }).then(response => {
-        this.spotList = response.rows || []
+      this.spotLoading = true
+      listSpot({ 
+        pageNum: this.spotPageNum, 
+        pageSize: this.spotPageSize,
+        spotName: this.spotKeyword || undefined
+      }).then(response => {
+        if (this.spotPageNum === 1) {
+          this.spotList = response.rows || []
+        } else {
+          this.spotList = [...this.spotList, ...(response.rows || [])]
+        }
+        this.spotHasMore = this.spotList.length < response.total
+        this.spotLoading = false
       })
+    },
+    // 搜索景点
+    searchSpot(query) {
+      this.spotKeyword = query
+      this.spotPageNum = 1
+      this.spotHasMore = true
+      this.getSpotList()
+    },
+    // 加载更多景点
+    loadMoreSpot() {
+      this.spotPageNum++
+      this.getSpotList()
     },
     cancel() {
       this.open = false
@@ -224,6 +269,11 @@ export default {
       this.form = { achievementId: undefined, achievementName: undefined, icon: '', description: '', conditionType: 'city', conditionCities: '', conditionSpots: '', timeType: 'any', months: '', status: '0', remark: '' }
       this.selectedMonths = []
       this.selectedPlaces = []
+      // 重置景点分页
+      this.spotPageNum = 1
+      this.spotKeyword = ''
+      this.spotHasMore = true
+      this.getSpotList()
       this.resetForm('form')
     },
     handleQuery() {
